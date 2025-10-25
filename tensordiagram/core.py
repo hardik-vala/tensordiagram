@@ -21,6 +21,14 @@ from .utils import draw_cell, draw_cube
 
 DEFAULT_HEIGHT = 128
 
+
+def set_default_height(height: int) -> None:
+    "Globally set the default height for rendering diagrams."
+    global DEFAULT_HEIGHT
+    DEFAULT_HEIGHT = height
+    chalk.set_svg_height(height)
+
+
 _default_map = lambda shape, value: np.full(
     shape, value, dtype=object if isinstance(value, str) else None
 )

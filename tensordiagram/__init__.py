@@ -7,8 +7,8 @@ if sys.version_info >= (3, 8):
 else:
     import importlib_metadata as metadata
 
-from tensordiagram.core import to_diagram
-from tensordiagram.types import TensorDiagram
+from tensordiagram.core import set_default_height, to_diagram
+from tensordiagram.types import TensorDiagram, TensorOrder
 
 if not TYPE_CHECKING:
     __libname__: str = "tensordiagram"
