@@ -1,0 +1,43 @@
+"""Type stubs for chalk.style module."""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, List, Optional, Tuple
+
+from colour import Color
+from typing_extensions import Self
+
+PyCairoContext = Any
+PyLatex = Any
+
+class Stylable:
+    def line_width(self, width: float) -> Self: ...
+    def line_width_local(self, width: float) -> Self: ...
+    def line_color(self, color: Color) -> Self: ...
+    def fill_color(self, color: Color) -> Self: ...
+    def fill_opacity(self, opacity: float) -> Self: ...
+    def dashing(self, dashing_strokes: List[float], offset: float) -> Self: ...
+    def apply_style(self: Self, style: Style) -> Self: ...
+
+class WidthType(Enum):
+    LOCAL: int
+    NORMALIZED: int
+
+@dataclass
+class Style(Stylable):
+    line_width_: Optional[Tuple[WidthType, float]] = None
+    line_color_: Optional[Color] = None
+    fill_color_: Optional[Color] = None
+    fill_opacity_: Optional[float] = None
+    dashing_: Optional[Tuple[List[float], float]] = None
+    output_size: Optional[float] = None
+
+    @classmethod
+    def empty(cls) -> Style: ...
+    @classmethod
+    def root(cls, output_size: float) -> Style: ...
+    def merge(self, other: Style) -> Style: ...
+    def render(self, ctx: PyCairoContext) -> None: ...
+    def to_svg(self) -> str: ...
+    def to_tikz(self, pylatex: PyLatex) -> dict[str, str]: ...

@@ -1,0 +1,18 @@
+# claude
+.claude
+
+# env
+.env
+
+# ide
+.vscode/
+
+# packaging
+build/
+*.egg-info/
+
+# python
+__pycache__/
+
+# virtual environments
+venv/

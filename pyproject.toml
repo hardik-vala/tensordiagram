@@ -1,0 +1,45 @@
+[project]
+name = "tensordiagram"
+version = "0.1.0"
+description = "Render diagrams for torch, jax, tensorflow, etc. tensors for understanding and debugging."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    {name = "Hardik Vala"},
+]
+
+dependencies = [
+    "chalk-diagrams @ git+https://github.com/hardik-vala/chalk",
+    "numpy",
+]
+
+[project.optional-dependencies]
+# Rendering options
+cairo = ["pycairo"]  # for png rendering
+svg = ["cairosvg"]  # for svg to png conversion
+tikz = ["pylatex", "latextools"]   # for LaTeX/TikZ output
+# Convenience groups
+all = ["pycairo", "cairosvg", "pylatex", "latextools"]
+# Development dependencies
+dev = [
+    "pycairo",
+    "cairosvg",
+    "pylatex",
+    "latextools"
+]
+# Testing dependencies
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "Pillow>=10.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/hardik-vala/tensordiagram"
+Repository = "https://github.com/hardik-vala/tensordiagram"
+Issues = "https://github.com/hardik-vala/tensordiagram/issues"
+
+[tool.setuptools]
+packages = ["tensordiagram"]
