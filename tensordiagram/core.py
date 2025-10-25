@@ -1,5 +1,4 @@
 from __future__ import annotations
-from cProfile import label
 
 from colour import Color
 from dataclasses import dataclass
@@ -22,7 +21,9 @@ from .utils import draw_cell, draw_cube
 
 DEFAULT_HEIGHT = 128
 
-_default_map = lambda shape, value: np.full(shape, value)
+_default_map = lambda shape, value: np.full(
+    shape, value, dtype=object if isinstance(value, str) else None
+)
 
 
 def _get_font_size(cell_size: float, tensor: WrappedTensor) -> float:
@@ -478,7 +479,7 @@ class TensorDiagramImpl(TensorDiagram):
         self, path: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
         try:
-            import cairo
+            import cairo  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
                 'pycairo is required to render png diagrams. Please install pycairo with `pip install ".[cairo]"`.'
@@ -491,7 +492,7 @@ class TensorDiagramImpl(TensorDiagram):
         self, path: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
         try:
-            import cairosvg
+            import cairosvg  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
                 'cairosvg is required to render svg diagrams. Please install cairosvg with `pip install ".[svg]"`.'
@@ -501,7 +502,7 @@ class TensorDiagramImpl(TensorDiagram):
 
     def draw_pdf(self, path: str, height: Optional[int] = None) -> None:
         try:
-            import pylatex
+            import pylatex  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
                 'pylatex is required to render pdf diagrams. Please install pylatex with `pip install ".[tikz]"`.'
