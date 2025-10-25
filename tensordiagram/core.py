@@ -38,6 +38,8 @@ def _get_font_size(cell_size: float, tensor: WrappedTensor) -> float:
     values = tensor.flatten()
     value_strs = [f"{x:.2f}" if isinstance(x, float) else str(x) for x in values]
     max_len = max(len(s) for s in value_strs)
+    if max_len == 2:
+        return cell_size * 0.6
     font_size_multiplier = 1.4 / max_len if max_len > 1 else 0.6
     return cell_size * font_size_multiplier
 
