@@ -22,15 +22,13 @@ svg = ["cairosvg"]  # for svg to png conversion
 tikz = ["pylatex", "latextools"]   # for LaTeX/TikZ output
 # Convenience groups
 all = ["pycairo", "cairosvg", "pylatex", "latextools"]
-# Development dependencies
+# Development
 dev = [
     "pycairo",
     "cairosvg",
     "pylatex",
-    "latextools"
-]
-# Testing dependencies
-test = [
+    "latextools",
+    # testing
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "Pillow>=10.0.0"
