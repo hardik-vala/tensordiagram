@@ -480,12 +480,12 @@ class TensorDiagramImpl(TensorDiagram):
 
         return out_diagram
 
-    def draw(
+    def render(
         self, path: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
         return self._diagram.render(path, height=height, width=width)
 
-    def draw_png(
+    def render_png(
         self, path: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
         try:
@@ -498,7 +498,7 @@ class TensorDiagramImpl(TensorDiagram):
         height = height if height is not None else DEFAULT_HEIGHT
         return self._diagram.render_png(path, height=height, width=width)
 
-    def draw_svg(
+    def render_svg(
         self, path: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None:
         try:
@@ -510,7 +510,7 @@ class TensorDiagramImpl(TensorDiagram):
         height = height if height is not None else DEFAULT_HEIGHT
         return self._diagram.render_svg(path, height=height, width=width)
 
-    def draw_pdf(self, path: str, height: Optional[int] = None) -> None:
+    def render_pdf(self, path: str, height: Optional[int] = None) -> None:
         try:
             import pylatex  # type: ignore[import-error]
         except ImportError:

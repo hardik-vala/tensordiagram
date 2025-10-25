@@ -66,17 +66,17 @@ class TensorAnnotation(Transferable):
     color: Optional[str] = None
 
 
-class Drawable(Protocol):
+class Renderable(Protocol):
 
-    def draw_png(
+    def render_png(
         self, path: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None: ...
 
-    def draw_svg(
+    def render_svg(
         self, path: str, height: Optional[int] = None, width: Optional[int] = None
     ) -> None: ...
 
-    def draw_pdf(self, path: str, height: Optional[int] = None) -> None: ...
+    def render_pdf(self, path: str, height: Optional[int] = None) -> None: ...
 
     def _repr_svg_(self) -> str: ...
 
@@ -126,7 +126,7 @@ class TensorAnnotatable(Protocol):
     ) -> Self: ...
 
 
-class TensorDiagram(Drawable, TensorAnnotatable, TensorStylable):
+class TensorDiagram(Renderable, TensorAnnotatable, TensorStylable):
 
     _row_indices_annotation: Optional[TensorAnnotation]
     _col_indices_annotation: Optional[TensorAnnotation]
