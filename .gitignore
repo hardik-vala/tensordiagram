@@ -14,5 +14,9 @@ build/
 # python
 __pycache__/
 
+# testing
+tests/fixtures/*.png
+tests/fixtures/*.svg
+
 # virtual environments
 venv/
