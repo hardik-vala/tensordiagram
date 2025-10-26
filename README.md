@@ -1,5 +1,7 @@
 # tensordiagram
 
+![example diagram](doc/imgs/header.png)
+
 A python library for visualizing tensors from torch, jax, tensorflow, numpy, etc. Helps with learning and debugging in notebokos and other contexts. It's built on top of the graphics backend, [chalk](https://chalk-diagrams.github.io).
 
 ## install
