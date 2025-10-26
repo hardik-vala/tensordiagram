@@ -243,7 +243,40 @@ class WrappedTensor:
 
 
 def to_diagram(shape: Union[tuple[int, ...], TensorLike]) -> TensorDiagram:
-    """Convert a shape tuple or tensor-like object to a TensorDiagram."""
+    """Convert a shape tuple or tensor-like object to a TensorDiagram.
+
+    Args:
+        shape: Either a tuple of integers representing tensor dimensions (e.g., (3, 4) for a 3x4 matrix)
+               or a tensor-like object (numpy array, torch tensor, jax array, tensorflow tensor, mlx array, or list).
+
+    Returns:
+        TensorDiagram: A diagram object that can be styled, annotated, combined, and exported to various formats.
+
+    Raises:
+        ValueError: If the shape tuple is empty or the tensor has more than 3 dimensions.
+        TypeError: If the input is neither a shape tuple nor a tensor-like object.
+
+    Examples:
+        >>> import tensordiagram as td
+        >>> import numpy as np
+
+        >>> # Create from shape tuple
+        >>> diagram = td.to_diagram((3, 4))
+
+        >>> # Create from numpy array
+        >>> arr = np.array([[1, 2, 3], [4, 5, 6]])
+        >>> diagram = td.to_diagram(arr)
+
+        >>> # Create from torch tensor
+        >>> import torch
+        >>> tensor = torch.randn(2, 3, 4)
+        >>> diagram = td.to_diagram(tensor)
+
+    Note:
+        - Supports tensors with 1, 2, or 3 dimensions only.
+        - When passing a shape tuple, a placeholder tensor filled with zeros is created internally.
+        - Tensor-like objects from torch, jax, tensorflow, and mlx are automatically converted to numpy arrays.
+    """
     if isinstance(shape, tuple):
         if len(shape) == 0:
             raise ValueError(f"Shape tuple must have at least 1 element, got {shape}")
