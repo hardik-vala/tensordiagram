@@ -134,7 +134,7 @@ def _build_row_size_annotation(
         chalk.text(str(rows), size=cell_size * 0.5)
         .fill_color(Color(color))
         .line_color(Color(color))
-        .line_width(0.05)
+        .line_width(0.0)
     )
     spacing = chalk.hstrut(cell_size * 0.5)
     return (label.center_xy() | spacing | line.center_xy(), cell_size * 1.25)
@@ -152,7 +152,7 @@ def _build_col_size_annotation(
         chalk.text(str(cols), size=cell_size * 0.5)
         .fill_color(Color(color))
         .line_color(Color(color))
-        .line_width(0.05)
+        .line_width(0.0)
     )
     spacing = chalk.vstrut(cell_size * 0.5)
     return (line.center_xy() / spacing / label.center_xy(), cell_size * 1.25)
@@ -186,7 +186,7 @@ def _build_depth_size_annotation(
         chalk.text(str(depth), size=cell_size * 0.5)
         .fill_color(Color(color))
         .line_color(Color(color))
-        .line_width(0.05)
+        .line_width(0.0)
     )
     return (line + label.center_xy().translate(dx=cell_size * 0.5, dy=0), 0.0)
 
@@ -392,7 +392,7 @@ class TensorDiagramImpl(TensorDiagram):
                     chalk.text(str(r), size=cell_size * 0.5)
                     .fill_color(Color(color))
                     .line_color(Color(color))
-                    .line_width(0.05)
+                    .line_width(0.0)
                 )
                 labels.append(label.center_xy())
 
@@ -433,7 +433,7 @@ class TensorDiagramImpl(TensorDiagram):
                     chalk.text(str(c), size=cell_size * 0.5)
                     .fill_color(Color(color))
                     .line_color(Color(color))
-                    .line_width(0.05)
+                    .line_width(0.0)
                 )
                 labels.append(label.center_xy())
 
@@ -480,7 +480,7 @@ class TensorDiagramImpl(TensorDiagram):
                     chalk.text(str(d), size=cell_size * 0.5)
                     .fill_color(Color(color))
                     .line_color(Color(color))
-                    .line_width(0.05)
+                    .line_width(0.0)
                 )
                 labels.append(label.translate(-d * hyp.x, -d * hyp.y))
 
