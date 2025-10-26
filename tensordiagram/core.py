@@ -10,6 +10,8 @@ import chalk
 import numpy as np
 
 from tensordiagram.types import (
+    ColorFunction,
+    OpacityFunction,
     Scalar,
     TensorAnnotation,
     TensorDiagram,
@@ -563,9 +565,9 @@ class TensorDiagramImpl(TensorDiagram):
         self,
         start_coord: Union[int, tuple[int, int], tuple[int, int, int]],
         end_coord: Union[int, tuple[int, int], tuple[int, int, int]],
-        color: Optional[str],
+        color: Optional[Union[str, ColorFunction]],
         opacity: Optional[
-            Union[float, tuple[float, float], tuple[float, float, TensorOrder]]
+            Union[float, tuple[float, float], tuple[float, float, TensorOrder], OpacityFunction]
         ],
     ) -> TensorDiagram:
         if color is None and opacity is None:
@@ -619,16 +621,58 @@ class TensorDiagramImpl(TensorDiagram):
 
         color_map = self._color_map.copy()
         if color is not None:
-            if self.rank == 1:
-                color_map[x] = color
-            elif self.rank == 2:
-                color_map[x, y] = color
-            elif self.rank == 3:
-                color_map[x, y, z] = color
+            if callable(color):
+                # color is a function: call it for each cell in the region
+                if self.rank == 1:
+                    for i in range(x.start, x.stop):
+                        idx = i
+                        val = self._wrapped_tensor[i]
+                        color_map[i] = color(idx, val)
+                elif self.rank == 2:
+                    for i in range(x.start, x.stop):
+                        for j in range(y.start, y.stop):  # type: ignore
+                            idx = (i, j)
+                            val = self._wrapped_tensor[i, j]
+                            color_map[i, j] = color(idx, val)
+                elif self.rank == 3:
+                    for i in range(x.start, x.stop):
+                        for j in range(y.start, y.stop):  # type: ignore
+                            for k in range(z.start, z.stop):  # type: ignore
+                                idx = (i, j, k)
+                                val = self._wrapped_tensor[i, j, k]
+                                color_map[i, j, k] = color(idx, val)
+            else:
+                # color is a static string
+                if self.rank == 1:
+                    color_map[x] = color
+                elif self.rank == 2:
+                    color_map[x, y] = color
+                elif self.rank == 3:
+                    color_map[x, y, z] = color
 
         opacity_map = self._opacity_map.copy()
         if opacity is not None:
-            if isinstance(opacity, float):
+            if callable(opacity):
+                # opacity is a function: call it for each cell in the region
+                if self.rank == 1:
+                    for i in range(x.start, x.stop):
+                        idx = i
+                        val = self._wrapped_tensor[i]
+                        opacity_map[i] = opacity(idx, val)
+                elif self.rank == 2:
+                    for i in range(x.start, x.stop):
+                        for j in range(y.start, y.stop):  # type: ignore
+                            idx = (i, j)
+                            val = self._wrapped_tensor[i, j]
+                            opacity_map[i, j] = opacity(idx, val)
+                elif self.rank == 3:
+                    for i in range(x.start, x.stop):
+                        for j in range(y.start, y.stop):  # type: ignore
+                            for k in range(z.start, z.stop):  # type: ignore
+                                idx = (i, j, k)
+                                val = self._wrapped_tensor[i, j, k]
+                                opacity_map[i, j, k] = opacity(idx, val)
+            elif isinstance(opacity, float):
                 if self.rank == 1:
                     opacity_map[x] = opacity
                 elif self.rank == 2:
@@ -763,7 +807,7 @@ class TensorDiagramImpl(TensorDiagram):
             _style=style,
         )
 
-    def fill_color(self, color: str) -> TensorDiagram:
+    def fill_color(self, color: Union[str, ColorFunction]) -> TensorDiagram:
         if self.rank == 1:
             start_coord = 0
             end_coord = self.tensor_shape[0] - 1
@@ -787,10 +831,17 @@ class TensorDiagramImpl(TensorDiagram):
 
     def fill_opacity(
         self,
-        opacity: float,
+        opacity: Union[float, OpacityFunction],
         end: Optional[float] = None,
         order: Optional[TensorOrder] = None,
     ) -> TensorDiagram:
+        # Check for mutually exclusive function and gradient parameters
+        if callable(opacity) and (end is not None or order is not None):
+            raise ValueError(
+                "When using a function for opacity, 'end' and 'order' parameters must be None. "
+                "Functions and gradients are mutually exclusive."
+            )
+
         if self.rank == 1:
             start_coord = 0
             end_coord = self.tensor_shape[0] - 1
@@ -805,7 +856,9 @@ class TensorDiagramImpl(TensorDiagram):
                 self.tensor_shape[2] - 1,
             )
 
-        if end is not None and order is not None:
+        if callable(opacity):
+            opacity_arg = opacity
+        elif end is not None and order is not None:
             opacity_arg = (opacity, end, order)
         elif end is not None and order is None:
             opacity_arg = (opacity, end)

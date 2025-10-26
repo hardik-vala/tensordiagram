@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, fields
 from enum import Enum
-from typing import Any, ClassVar, Literal, Protocol, Optional, Union, TYPE_CHECKING
+from typing import Any, Callable, ClassVar, Literal, Protocol, Optional, Union, TYPE_CHECKING
 from typing_extensions import Self
 
 import chalk
@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
 Scalar = Union[int, float, str, bool]
 TensorLike = Any
+ColorFunction = Callable[[Union[int, tuple[int, ...]], Scalar], str]
+OpacityFunction = Callable[[Union[int, tuple[int, ...]], Scalar], float]
 
 
 _m = lambda a, b: a if a is not None else b
@@ -130,12 +132,13 @@ class TensorStylable(Protocol):
         self,
         start_coord: Union[int, tuple[int, int], tuple[int, int, int]],
         end_coord: Union[int, tuple[int, int], tuple[int, int, int]],
-        color: Optional[str],
+        color: Optional[Union[str, ColorFunction]],
         opacity: Optional[
             Union[
                 float,
                 tuple[float, float],
                 tuple[float, float, TensorOrder],
+                OpacityFunction,
             ]
         ],
     ) -> Self:
@@ -144,73 +147,84 @@ class TensorStylable(Protocol):
         Args:
             start_coord: The starting coordinate of the region to fill (inclusive).
             end_coord: The ending coordinate of the region to fill (inclusive).
-            color: The color to fill the region with.
+            color: The color to fill the region with. Can be a string color
+                or a callable that takes (index, value) and returns a color string.
             opacity: The opacity to fill the region with. Can be a single
                 value, a tuple of (start, end) opacities for a gradient,
-                or a tuple of (start, end, order) for a gradient with a
-                specific order.
+                a tuple of (start, end, order) for a gradient with a
+                specific order, or a callable that takes (index, value) and
+                returns an opacity float. Note: gradients and functions are
+                mutually exclusive.
 
         Examples:
+            Static color and opacity:
             >>> d = td.to_diagram((2, 3, 4))
             >>> d.fill_region((0, 0, 0), (0, 1, 2), color="red", opacity=0.5)
-            >>>
+
+            Gradient opacity:
             >>> d = td.to_diagram((2, 3, 4))
             >>> d.fill_region((0, 0, 0), (0, 1, 2), color="red", opacity=(0.1, 0.9))
-            >>>
-            >>> d = td.to_diagram((2, 3, 4))
-            # gradients change along row dim only
-            >>> d.fill_region((0, 0, 0), (0, 1, 2), color="red", opacity=(0.1, 0.9, TensorOrder.R))
-            >>>
-            >>> d = td.to_diagram((2, 3, 4))
-            # gradients change along row dim first, then column dim, but not depth dim
-            >>> d.fill_region((0, 0, 0), (0, 1, 2), color="red", opacity=(0.1, 0.9, TensorOrder.RC))
-            >>>
-            >>> d = td.to_diagram((2, 3, 4))
-            # gradients change along row dim first, then column dim, and then depth dim
-            >>> d.fill_region((0, 0, 0), (0, 1, 2), color="red", opacity=(0.1, 0.9, TensorOrder.RCD))
-            >>>
+
+            Function-based color (based on cell value):
+            >>> tensor = td.to_diagram(np.array([[1, -2], [3, -4]]))
+            >>> tensor.fill_region((0, 0), (1, 1),
+            ...     color=lambda idx, val: "red" if val > 0 else "blue",
+            ...     opacity=None)
+
+            Function-based opacity (based on index position):
+            >>> d = td.to_diagram((3, 4))
+            >>> d.fill_region((0, 0), (2, 3),
+            ...     color="green",
+            ...     opacity=lambda idx, val: idx[0] / 2.0)
         """
         ...
 
-    def fill_color(self, color: str) -> Self:
+    def fill_color(self, color: Union[str, ColorFunction]) -> Self:
         """Fills the entire tensor with a color.
 
         Args:
-            color: The color to fill the tensor with.
+            color: The color to fill the tensor with. Can be a string color
+                or a callable that takes (index, value) and returns a color string.
 
         Examples:
+            Static color:
             >>> d = td.to_diagram((3, 4))
             >>> d.fill_color("blue")
+
+            Function-based color:
+            >>> tensor = td.to_diagram(np.array([[1, 2], [3, 4]]))
+            >>> tensor.fill_color(lambda idx, val: "red" if val > 2 else "blue")
         """
         ...
 
     def fill_opacity(
         self,
-        opacity: float,
+        opacity: Union[float, OpacityFunction],
         end: Optional[float] = None,
         order: Optional[TensorOrder] = None,
     ) -> Self:
         """Fills the entire tensor with an opacity or opacity gradient.
 
         Args:
-            opacity: The starting opacity.
+            opacity: The starting opacity or a callable that takes (index, value)
+                and returns an opacity float. When using a function, end and
+                order parameters must be None (functions and gradients are
+                mutually exclusive).
             end: The ending opacity for a gradient.
             order: The order of the gradient.
 
         Examples:
+            Static opacity:
             >>> d = td.to_diagram((3, 4))
             >>> d.fill_opacity(0.5)
-            >>>
+
+            Gradient opacity:
             >>> d = td.to_diagram((3, 4))
             >>> d.fill_opacity(0.2, 0.8)
-            >>>            
-            >>> d = td.to_diagram((3, 4))
-            # gradient changes along row dim only
-            >>> d.fill_opacity(0.2, 0.8, order=TensorOrder.R)
-            >>>
-            >>> d = td.to_diagram((3, 4))
-            # gradient changes along row dim first, then column dim
-            >>> d.fill_opacity(0.2, 0.8, order=TensorOrder.RC)
+
+            Function-based opacity:
+            >>> tensor = td.to_diagram(np.array([[1, 2, 3], [4, 5, 6]]))
+            >>> tensor.fill_opacity(lambda idx, val: val / 10.0)
         """
         ...
 
