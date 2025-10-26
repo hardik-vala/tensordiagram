@@ -675,6 +675,9 @@ class TensorDiagramImpl(TensorDiagram):
                     ]
 
                     for i, j, k in indices:
+                        if order is None:
+                            order = TensorOrder.RCD
+
                         if order == TensorOrder.R:
                             mul = i / (x_size - 1)
                         elif order == TensorOrder.C:
