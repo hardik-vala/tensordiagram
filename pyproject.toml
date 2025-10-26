@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "tensordiagram"
 version = "0.1.0"
@@ -11,7 +15,7 @@ authors = [
 ]
 
 dependencies = [
-    "chalk-diagrams @ git+https://github.com/hardik-vala/chalk",
+    "chalk-diagrams>=0.2.2",
     "numpy",
 ]
 
