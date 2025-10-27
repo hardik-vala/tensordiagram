@@ -4,6 +4,12 @@
 
 A python library for visualizing tensors from torch, jax, tensorflow, numpy, etc. Helps with learning and debugging in notebokos and other contexts. It's built on top of the graphics backend, [chalk](https://chalk-diagrams.github.io).
 
+## why
+
+Debugging deep learning code is hard—especially when it's foreign, because it's hard to imagine tensor manipulations, e.g. `F.conv2d(x.unsqueeze(1), w.transpose(-1, -2)).squeeze().view(B, L, -1)` in your head. Printing shapes and tensor values only gets you so far. `tensordiagram` lets me easily represent tensors visually, inside python code, notebooks, and interpreter sessions.
+
+Other python libraries for creating tensor diagrams are either too physics and math focused, not notebook-friendly, limited to visualizing single tensors, and/or serve a wider purpose (so have a steep learning curve).  
+
 ## install
 
 ```bash
