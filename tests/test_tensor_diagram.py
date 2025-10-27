@@ -1018,3 +1018,328 @@ class TestAnnotateDimIndices:
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
+
+class TestGradientOrders:
+    """Tests for gradient orders with fill_opacity."""
+
+    # 1D tensor gradient order tests
+    def test_1d_gradient_order_R(self, shape_1d):
+        """Test 1D tensor with TensorOrder.R (only valid order)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_1d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.R)
+
+        assert gradient_diagram.rank == 1
+        assert gradient_diagram.tensor_shape == shape_1d
+
+    def test_1d_gradient_default_order(self, shape_1d):
+        """Test 1D tensor defaults to TensorOrder.R when order not specified."""
+        diagram = to_diagram(shape_1d)
+        gradient_diagram = diagram.fill_opacity(0.2, 0.8)
+
+        assert gradient_diagram.rank == 1
+        assert gradient_diagram.tensor_shape == shape_1d
+
+    def test_1d_gradient_invalid_order_raises_error(self, shape_1d):
+        """Test that invalid orders for 1D tensor raise ValueError."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_1d)
+
+        with pytest.raises(ValueError, match="For 1D tensors, order for opacity must be 'r'"):
+            diagram.fill_opacity(0.1, 0.9, order=TensorOrder.C)
+
+    # 2D tensor gradient order tests
+    def test_2d_gradient_order_R(self, shape_2d):
+        """Test 2D tensor with TensorOrder.R (row-wise gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_2d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.R)
+
+        assert gradient_diagram.rank == 2
+        assert gradient_diagram.tensor_shape == shape_2d
+
+    def test_2d_gradient_order_C(self, shape_2d):
+        """Test 2D tensor with TensorOrder.C (column-wise gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_2d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.C)
+
+        assert gradient_diagram.rank == 2
+        assert gradient_diagram.tensor_shape == shape_2d
+
+    def test_2d_gradient_order_RC(self, shape_2d):
+        """Test 2D tensor with TensorOrder.RC (row-then-column gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_2d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.RC)
+
+        assert gradient_diagram.rank == 2
+        assert gradient_diagram.tensor_shape == shape_2d
+
+    def test_2d_gradient_order_CR(self, shape_2d):
+        """Test 2D tensor with TensorOrder.CR (column-then-row gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_2d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.CR)
+
+        assert gradient_diagram.rank == 2
+        assert gradient_diagram.tensor_shape == shape_2d
+
+    def test_2d_gradient_default_order_is_RC(self, shape_2d):
+        """Test 2D tensor defaults to TensorOrder.RC when order not specified."""
+        diagram = to_diagram(shape_2d)
+        gradient_diagram = diagram.fill_opacity(0.2, 0.8)
+
+        assert gradient_diagram.rank == 2
+        assert gradient_diagram.tensor_shape == shape_2d
+
+    def test_2d_gradient_invalid_order_raises_error(self, shape_2d):
+        """Test that invalid orders for 2D tensor raise ValueError."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_2d)
+
+        with pytest.raises(ValueError, match="For 2D tensors, order for opacity must be"):
+            diagram.fill_opacity(0.1, 0.9, order=TensorOrder.D)
+
+    def test_2d_fill_region_with_gradient_order_R(self, numpy_array_2d):
+        """Test fill_region with gradient order R on 2D tensor."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(numpy_array_2d)
+        filled = diagram.fill_region(
+            start_coord=(0, 0),
+            end_coord=(2, 3),
+            color=None,
+            opacity=(0.2, 0.9, TensorOrder.R)
+        )
+
+        assert filled.rank == 2
+        assert filled.tensor_shape == (3, 4)
+
+    def test_2d_fill_region_with_gradient_order_C(self, numpy_array_2d):
+        """Test fill_region with gradient order C on 2D tensor."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(numpy_array_2d)
+        filled = diagram.fill_region(
+            start_coord=(0, 0),
+            end_coord=(2, 3),
+            color=None,
+            opacity=(0.2, 0.9, TensorOrder.C)
+        )
+
+        assert filled.rank == 2
+        assert filled.tensor_shape == (3, 4)
+
+    def test_2d_fill_region_with_gradient_order_CR(self, numpy_array_2d):
+        """Test fill_region with gradient order CR on 2D tensor."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(numpy_array_2d)
+        filled = diagram.fill_region(
+            start_coord=(0, 0),
+            end_coord=(2, 3),
+            color=None,
+            opacity=(0.2, 0.9, TensorOrder.CR)
+        )
+
+        assert filled.rank == 2
+        assert filled.tensor_shape == (3, 4)
+
+    # 3D tensor gradient order tests - single dimension orders
+    def test_3d_gradient_order_R(self, shape_3d):
+        """Test 3D tensor with TensorOrder.R (row gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.R)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_C(self, shape_3d):
+        """Test 3D tensor with TensorOrder.C (column gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.C)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_D(self, shape_3d):
+        """Test 3D tensor with TensorOrder.D (depth gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.D)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    # 3D tensor gradient order tests - two dimension orders
+    def test_3d_gradient_order_RC(self, shape_3d):
+        """Test 3D tensor with TensorOrder.RC (row-column gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.RC)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_RD(self, shape_3d):
+        """Test 3D tensor with TensorOrder.RD (row-depth gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.RD)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_CR(self, shape_3d):
+        """Test 3D tensor with TensorOrder.CR (column-row gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.CR)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_CD(self, shape_3d):
+        """Test 3D tensor with TensorOrder.CD (column-depth gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.CD)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_DR(self, shape_3d):
+        """Test 3D tensor with TensorOrder.DR (depth-row gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.DR)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_DC(self, shape_3d):
+        """Test 3D tensor with TensorOrder.DC (depth-column gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.DC)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    # 3D tensor gradient order tests - three dimension orders
+    def test_3d_gradient_order_RCD(self, shape_3d):
+        """Test 3D tensor with TensorOrder.RCD (row-column-depth gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.RCD)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_RDC(self, shape_3d):
+        """Test 3D tensor with TensorOrder.RDC (row-depth-column gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.RDC)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_CRD(self, shape_3d):
+        """Test 3D tensor with TensorOrder.CRD (column-row-depth gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.CRD)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_CDR(self, shape_3d):
+        """Test 3D tensor with TensorOrder.CDR (column-depth-row gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.CDR)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_DRC(self, shape_3d):
+        """Test 3D tensor with TensorOrder.DRC (depth-row-column gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.DRC)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_order_DCR(self, shape_3d):
+        """Test 3D tensor with TensorOrder.DCR (depth-column-row gradient)."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.1, 0.9, order=TensorOrder.DCR)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_gradient_default_order_is_RCD(self, shape_3d):
+        """Test 3D tensor defaults to TensorOrder.RCD when order not specified."""
+        diagram = to_diagram(shape_3d)
+        gradient_diagram = diagram.fill_opacity(0.2, 0.8)
+
+        assert gradient_diagram.rank == 3
+        assert gradient_diagram.tensor_shape == shape_3d
+
+    def test_3d_fill_region_with_gradient_order_D(self, numpy_array_3d):
+        """Test fill_region with gradient order D on 3D tensor."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(numpy_array_3d)
+        filled = diagram.fill_region(
+            start_coord=(0, 0, 0),
+            end_coord=(1, 2, 3),
+            color=None,
+            opacity=(0.2, 0.9, TensorOrder.D)
+        )
+
+        assert filled.rank == 3
+        assert filled.tensor_shape == (2, 3, 4)
+
+    def test_3d_fill_region_with_gradient_order_RDC(self, numpy_array_3d):
+        """Test fill_region with gradient order RDC on 3D tensor."""
+        from tensordiagram.types import TensorOrder
+
+        diagram = to_diagram(numpy_array_3d)
+        filled = diagram.fill_region(
+            start_coord=(0, 0, 0),
+            end_coord=(1, 2, 3),
+            color=None,
+            opacity=(0.2, 0.9, TensorOrder.RDC)
+        )
+
+        assert filled.rank == 3
+        assert filled.tensor_shape == (2, 3, 4)

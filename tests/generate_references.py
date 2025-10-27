@@ -648,6 +648,107 @@ def generate_3d_function_color(fixtures_dir):
     )
 
 
+# Gradient order reference generators - 2D
+def generate_2d_gradient_order_R(fixtures_dir):
+    """Generate reference_2d_gradient_order_R.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_2d_gradient_order_R.svg...")
+    tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.R)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_gradient_order_R.svg"), height=128
+    )
+
+
+def generate_2d_gradient_order_C(fixtures_dir):
+    """Generate reference_2d_gradient_order_C.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_2d_gradient_order_C.svg...")
+    tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.C)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_gradient_order_C.svg"), height=128
+    )
+
+
+def generate_2d_gradient_order_CR(fixtures_dir):
+    """Generate reference_2d_gradient_order_CR.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_2d_gradient_order_CR.svg...")
+    tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.CR)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_gradient_order_CR.svg"), height=128
+    )
+
+
+# Gradient order reference generators - 3D
+def generate_3d_gradient_order_R(fixtures_dir):
+    """Generate reference_3d_gradient_order_R.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_3d_gradient_order_R.svg...")
+    tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.R)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_3d_gradient_order_R.svg"), height=128
+    )
+
+
+def generate_3d_gradient_order_C(fixtures_dir):
+    """Generate reference_3d_gradient_order_C.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_3d_gradient_order_C.svg...")
+    tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.C)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_3d_gradient_order_C.svg"), height=128
+    )
+
+
+def generate_3d_gradient_order_D(fixtures_dir):
+    """Generate reference_3d_gradient_order_D.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_3d_gradient_order_D.svg...")
+    tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.D)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_3d_gradient_order_D.svg"), height=128
+    )
+
+
+def generate_3d_gradient_order_RD(fixtures_dir):
+    """Generate reference_3d_gradient_order_RD.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_3d_gradient_order_RD.svg...")
+    tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.RD)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_3d_gradient_order_RD.svg"), height=128
+    )
+
+
+def generate_3d_gradient_order_RDC(fixtures_dir):
+    """Generate reference_3d_gradient_order_RDC.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_3d_gradient_order_RDC.svg...")
+    tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.RDC)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_3d_gradient_order_RDC.svg"), height=128
+    )
+
+
+def generate_3d_gradient_order_DCR(fixtures_dir):
+    """Generate reference_3d_gradient_order_DCR.svg"""
+    from tensordiagram.types import TensorOrder
+    print("Generating reference_3d_gradient_order_DCR.svg...")
+    tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+    diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.DCR)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_3d_gradient_order_DCR.svg"), height=128
+    )
+
+
 # Registry of all generators
 GENERATORS = {
     "shape_3x4": generate_shape_3x4,
@@ -707,6 +808,17 @@ GENERATORS = {
     "2d_function_both": generate_2d_function_both,
     "1d_function_color": generate_1d_function_color,
     "3d_function_color": generate_3d_function_color,
+    # Gradient order references - 2D
+    "2d_gradient_order_R": generate_2d_gradient_order_R,
+    "2d_gradient_order_C": generate_2d_gradient_order_C,
+    "2d_gradient_order_CR": generate_2d_gradient_order_CR,
+    # Gradient order references - 3D
+    "3d_gradient_order_R": generate_3d_gradient_order_R,
+    "3d_gradient_order_C": generate_3d_gradient_order_C,
+    "3d_gradient_order_D": generate_3d_gradient_order_D,
+    "3d_gradient_order_RD": generate_3d_gradient_order_RD,
+    "3d_gradient_order_RDC": generate_3d_gradient_order_RDC,
+    "3d_gradient_order_DCR": generate_3d_gradient_order_DCR,
 }
 
 

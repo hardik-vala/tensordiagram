@@ -1151,6 +1151,170 @@ class TestVisualRegression:
         else:
             pytest.skip(f"Reference image not found: {reference_path}")
 
+    # Gradient order visual tests for 2D tensors
+    def test_reference_2d_gradient_order_R(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with gradient order R (row-wise) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.R)
+        output_path = temp_output_dir / "2d_gradient_order_R.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_gradient_order_R.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_gradient_order_C(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with gradient order C (column-wise) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.C)
+        output_path = temp_output_dir / "2d_gradient_order_C.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_gradient_order_C.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_gradient_order_CR(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with gradient order CR (column-then-row) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.CR)
+        output_path = temp_output_dir / "2d_gradient_order_CR.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_gradient_order_CR.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    # Gradient order visual tests for 3D tensors
+    def test_reference_3d_gradient_order_R(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 3D tensor with gradient order R (row) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.R)
+        output_path = temp_output_dir / "3d_gradient_order_R.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_3d_gradient_order_R.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_3d_gradient_order_C(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 3D tensor with gradient order C (column) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.C)
+        output_path = temp_output_dir / "3d_gradient_order_C.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_3d_gradient_order_C.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_3d_gradient_order_D(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 3D tensor with gradient order D (depth) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.D)
+        output_path = temp_output_dir / "3d_gradient_order_D.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_3d_gradient_order_D.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_3d_gradient_order_RD(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 3D tensor with gradient order RD (row-then-depth) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.RD)
+        output_path = temp_output_dir / "3d_gradient_order_RD.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_3d_gradient_order_RD.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_3d_gradient_order_RDC(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 3D tensor with gradient order RDC (row-depth-column) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.RDC)
+        output_path = temp_output_dir / "3d_gradient_order_RDC.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_3d_gradient_order_RDC.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_3d_gradient_order_DCR(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 3D tensor with gradient order DCR (depth-column-row) matches reference."""
+        from tensordiagram.types import TensorOrder
+
+        tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
+        diagram = td.to_diagram(tensor).fill_opacity(0.2, 0.9, order=TensorOrder.DCR)
+        output_path = temp_output_dir / "3d_gradient_order_DCR.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_3d_gradient_order_DCR.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
 
 @pytest.mark.rendering
 class TestRenderingDimensions:
