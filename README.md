@@ -1,6 +1,6 @@
 # tensordiagram
 
-![example diagram](doc/imgs/header.png)
+![example diagram](https://raw.githubusercontent.com/hardik-vala/tensordiagram/refs/heads/main/doc/imgs/header.png)
 
 A python library for visualizing tensors from torch, jax, tensorflow, numpy, etc. Helps with learning and debugging in notebooks and other contexts. It's built on top of the graphics backend, [chalk](https://chalk-diagrams.github.io).
 
@@ -44,7 +44,7 @@ tensor = np.arange(12).reshape(3, 4)
 diagram = td.to_diagram(tensor)
 ```
 
-![plain 3x4 matrix](doc/imgs/matrix_plain.png)
+![plain 3x4 matrix](https://raw.githubusercontent.com/hardik-vala/tensordiagram/refs/heads/main/doc/imgs/matrix_plain.png)
 
 The **diagram can be saved** using `render_png` or `render_svg`:
 
@@ -61,7 +61,7 @@ diagram \
   .annotate_dim_size(dim="row", color="lightgreen")
 ```
 
-![styled 3x4 matrix](doc/imgs/matrix_styled.png)
+![styled 3x4 matrix](https://raw.githubusercontent.com/hardik-vala/tensordiagram/refs/heads/main/doc/imgs/matrix_styled.png)
 
 **3d tensor**:
 
@@ -72,7 +72,7 @@ tensor = np.arange(24).reshape((2, 3, 4))
 diagram = td.to_diagram(tensor).fill_color(papaya)
 ```
 
-![3d tensor](doc/imgs/tensor_3d.png)
+![3d tensor](https://raw.githubusercontent.com/hardik-vala/tensordiagram/refs/heads/main/doc/imgs/tensor_3d.png)
 
 Combine tensor and chalk diagrams for intricate outputs: 
 
@@ -115,7 +115,7 @@ chalk.set_svg_height(300)
 chalk.rectangle(env.width * 0.8, env.height).fill_color(Color("white")) + composite.translate(dx=env.width * 0.1, dy=0)
 ```
 
-![complex diagram](doc/imgs/complex_diagram.png)
+![complex diagram](https://raw.githubusercontent.com/hardik-vala/tensordiagram/refs/heads/main/doc/imgs/complex_diagram.png)
 
 
 For more examples and documentation, refer to this [guide](https://colab.research.google.com/drive/1GnoRwsFeaPBAYXawVrnQjf_aooR9OUq2?usp=sharing).
