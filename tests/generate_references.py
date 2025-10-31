@@ -820,6 +820,47 @@ def generate_1d_fill_values_custom_format(fixtures_dir):
     )
 
 
+# annotate_dim_indices with custom font size reference generators
+def generate_1d_annotate_indices_custom_font_size(fixtures_dir):
+    """Generate reference_1d_annotate_indices_custom_font_size.svg"""
+    print("Generating reference_1d_annotate_indices_custom_font_size.svg...")
+    tensor = np.arange(8, dtype=np.float32)
+    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.5)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_1d_annotate_indices_custom_font_size.svg"), height=128
+    )
+
+
+def generate_2d_annotate_indices_custom_font_size(fixtures_dir):
+    """Generate reference_2d_annotate_indices_custom_font_size.svg"""
+    print("Generating reference_2d_annotate_indices_custom_font_size.svg...")
+    tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.6)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_annotate_indices_custom_font_size.svg"), height=128
+    )
+
+
+def generate_2d_annotate_indices_large_font_size(fixtures_dir):
+    """Generate reference_2d_annotate_indices_large_font_size.svg"""
+    print("Generating reference_2d_annotate_indices_large_font_size.svg...")
+    tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=1.2)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_annotate_indices_large_font_size.svg"), height=128
+    )
+
+
+def generate_2d_annotate_indices_small_font_size(fixtures_dir):
+    """Generate reference_2d_annotate_indices_small_font_size.svg"""
+    print("Generating reference_2d_annotate_indices_small_font_size.svg...")
+    tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.3)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_annotate_indices_small_font_size.svg"), height=128
+    )
+
+
 # Registry of all generators
 GENERATORS = {
     "shape_3x4": generate_shape_3x4,
@@ -898,6 +939,11 @@ GENERATORS = {
     "2d_fill_values_size_and_format": generate_2d_fill_values_size_and_format,
     "1d_fill_values_custom_font_size": generate_1d_fill_values_custom_font_size,
     "1d_fill_values_custom_format": generate_1d_fill_values_custom_format,
+    # annotate_dim_indices with custom font size
+    "1d_annotate_indices_custom_font_size": generate_1d_annotate_indices_custom_font_size,
+    "2d_annotate_indices_custom_font_size": generate_2d_annotate_indices_custom_font_size,
+    "2d_annotate_indices_large_font_size": generate_2d_annotate_indices_large_font_size,
+    "2d_annotate_indices_small_font_size": generate_2d_annotate_indices_small_font_size,
 }
 
 

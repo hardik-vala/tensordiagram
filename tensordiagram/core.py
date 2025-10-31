@@ -412,11 +412,16 @@ class TensorDiagramImpl(TensorDiagram):
                 if self._row_indices_annotation.color
                 else "black"
             )
+            size = (
+                self._row_indices_annotation.font_size
+                if self._row_indices_annotation.font_size is not None
+                else cell_size * 0.5
+            )
 
             labels = []
             for r in range(rows):
                 label = (
-                    chalk.text(str(r), size=cell_size * 0.5)
+                    chalk.text(str(r), size=size)
                     .fill_color(Color(color))
                     .line_color(Color(color))
                     .line_width(0.0)
@@ -453,11 +458,16 @@ class TensorDiagramImpl(TensorDiagram):
                 if self._col_indices_annotation.color
                 else "black"
             )
+            size = (
+                self._col_indices_annotation.font_size
+                if self._col_indices_annotation.font_size is not None
+                else cell_size * 0.5
+            )
 
             labels = []
             for c in range(cols):
                 label = (
-                    chalk.text(str(c), size=cell_size * 0.5)
+                    chalk.text(str(c), size=size)
                     .fill_color(Color(color))
                     .line_color(Color(color))
                     .line_width(0.0)
@@ -499,12 +509,17 @@ class TensorDiagramImpl(TensorDiagram):
                 if self._depth_indices_annotation.color
                 else "black"
             )
+            size = (
+                self._depth_indices_annotation.font_size
+                if self._depth_indices_annotation.font_size is not None
+                else cell_size * 0.5
+            )
             hyp = (chalk.unit_y * 0.5 * cell_size).shear_x(-1)  # type: ignore
 
             labels = []
             for d in range(depth):
                 label = (
-                    chalk.text(str(d), size=cell_size * 0.5)
+                    chalk.text(str(d), size=size)
                     .fill_color(Color(color))
                     .line_color(Color(color))
                     .line_width(0.0)
@@ -931,6 +946,7 @@ class TensorDiagramImpl(TensorDiagram):
         self,
         dim: Literal["row", "col", "depth", "all"] = "all",
         color: Optional[str] = None,
+        font_size: Optional[FontSize] = None,
     ) -> TensorDiagram:
         if self.rank == 1 and dim != "row" and dim != "all":
             raise ValueError("1D tensors can only annotate 'row' dimension")
@@ -946,24 +962,24 @@ class TensorDiagramImpl(TensorDiagram):
         depth_annotation = self._depth_indices_annotation
         if dim == "row" or dim == "all":
             if self._row_indices_annotation is None:
-                row_annotation = TensorAnnotation(color)
+                row_annotation = TensorAnnotation(color, font_size)
             else:
                 row_annotation = self._row_indices_annotation.transfer(
-                    TensorAnnotation(color)
+                    TensorAnnotation(color, font_size)
                 )
         if (dim == "col" or dim == "all") and self.rank >= 2:
             if self._col_indices_annotation is None:
-                col_annotation = TensorAnnotation(color)
+                col_annotation = TensorAnnotation(color, font_size)
             else:
                 col_annotation = self._col_indices_annotation.transfer(
-                    TensorAnnotation(color)
+                    TensorAnnotation(color, font_size)
                 )
         if (dim == "depth" or dim == "all") and self.rank == 3:
             if self._depth_indices_annotation is None:
-                depth_annotation = TensorAnnotation(color)
+                depth_annotation = TensorAnnotation(color, font_size)
             else:
                 depth_annotation = self._depth_indices_annotation.transfer(
-                    TensorAnnotation(color)
+                    TensorAnnotation(color, font_size)
                 )
 
         return TensorDiagramImpl(

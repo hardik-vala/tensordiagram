@@ -1093,6 +1093,50 @@ class TestAnnotateDimIndices:
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
+    def test_annotate_dim_indices_with_font_size_1d(self, shape_1d):
+        """Test annotating 1D tensor indices with custom font size."""
+        diagram = to_diagram(shape_1d)
+        annotated = diagram.annotate_dim_indices("row", font_size=0.8)
+        assert annotated.rank == 1
+        assert annotated.tensor_shape == shape_1d
+        assert annotated._row_indices_annotation.font_size == 0.8
+
+    def test_annotate_dim_indices_with_font_size_2d(self, shape_2d):
+        """Test annotating 2D tensor indices with custom font size."""
+        diagram = to_diagram(shape_2d)
+        annotated = diagram.annotate_dim_indices("all", font_size=1.2)
+        assert annotated.rank == 2
+        assert annotated.tensor_shape == shape_2d
+        assert annotated._row_indices_annotation.font_size == 1.2
+        assert annotated._col_indices_annotation.font_size == 1.2
+
+    def test_annotate_dim_indices_with_font_size_3d(self, shape_3d):
+        """Test annotating 3D tensor indices with custom font size."""
+        diagram = to_diagram(shape_3d)
+        annotated = diagram.annotate_dim_indices("all", font_size=0.6)
+        assert annotated.rank == 3
+        assert annotated.tensor_shape == shape_3d
+        assert annotated._row_indices_annotation.font_size == 0.6
+        assert annotated._col_indices_annotation.font_size == 0.6
+        assert annotated._depth_indices_annotation.font_size == 0.6
+
+    def test_annotate_dim_indices_with_color_and_font_size(self, shape_2d):
+        """Test annotating indices with both color and font size."""
+        diagram = to_diagram(shape_2d)
+        annotated = diagram.annotate_dim_indices("row", color="red", font_size=0.9)
+        assert annotated.rank == 2
+        assert annotated.tensor_shape == shape_2d
+        assert annotated._row_indices_annotation.color == "red"
+        assert annotated._row_indices_annotation.font_size == 0.9
+
+    def test_annotate_dim_indices_font_size_none_defaults(self, shape_2d):
+        """Test that None font_size uses default behavior."""
+        diagram = to_diagram(shape_2d)
+        annotated = diagram.annotate_dim_indices("row", font_size=None)
+        assert annotated.rank == 2
+        assert annotated.tensor_shape == shape_2d
+        assert annotated._row_indices_annotation.font_size is None
+
 
 class TestGradientOrders:
     """Tests for gradient orders with fill_opacity."""

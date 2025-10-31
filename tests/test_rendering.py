@@ -1428,6 +1428,71 @@ class TestVisualRegression:
         else:
             pytest.skip(f"Reference image not found: {reference_path}")
 
+    # annotate_dim_indices with custom font size tests
+    def test_reference_1d_annotate_indices_custom_font_size(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 1D tensor with indices annotated (custom font size) matches reference."""
+        tensor = np.arange(8, dtype=np.float32)
+        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.5)
+        output_path = temp_output_dir / "1d_annotate_indices_custom_font_size.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_1d_annotate_indices_custom_font_size.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_annotate_indices_custom_font_size(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with indices annotated (custom font size) matches reference."""
+        tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.6)
+        output_path = temp_output_dir / "2d_annotate_indices_custom_font_size.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_annotate_indices_custom_font_size.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_annotate_indices_large_font_size(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with indices annotated (large font size) matches reference."""
+        tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=1.2)
+        output_path = temp_output_dir / "2d_annotate_indices_large_font_size.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_annotate_indices_large_font_size.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_annotate_indices_small_font_size(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with indices annotated (small font size) matches reference."""
+        tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.3)
+        output_path = temp_output_dir / "2d_annotate_indices_small_font_size.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_annotate_indices_small_font_size.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
 
 @pytest.mark.rendering
 class TestRenderingDimensions:

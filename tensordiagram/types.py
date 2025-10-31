@@ -94,6 +94,7 @@ class TensorStyle(Transferable):
 @dataclass
 class TensorAnnotation(Transferable):
     color: Optional[str] = None
+    font_size: Optional[FontSize] = None
 
 
 class Renderable(Protocol):
@@ -295,19 +296,21 @@ class TensorAnnotatable(Protocol):
         self,
         dim: Literal["row", "col", "depth", "all"] = "all",
         color: Optional[str] = None,
+        font_size: Optional[FontSize] = None,
     ) -> Self:
         """Annotates dimensions of the tensor with indices.
 
         Args:
             dim: The dimension to annotate.
             color: The color of the index text.
+            font_size: The font size of the index text.
 
         Examples:
             >>> d = td.to_diagram((3, 4))
             >>> d.annotate_dim_indices("row", color="green")
             >>>
             >>> d = td.to_diagram((3, 4))
-            >>> d.annotate_dim_indices("all")
+            >>> d.annotate_dim_indices("all", font_size=2)
         """
         ...
 
