@@ -177,6 +177,81 @@ class TestFillValues:
         assert diagram.rank == 2
         assert diagram_with_values.rank == 2
 
+    def test_fill_values_with_custom_font_size(self, numpy_array_2d):
+        """Test fill_values with custom font size."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values(font_size=0.8)
+        assert diagram_with_values.rank == diagram.rank
+        assert diagram_with_values._style.value_font_size == 0.8
+
+    def test_fill_values_with_format_fn(self, numpy_array_2d):
+        """Test fill_values with custom format function."""
+        diagram = to_diagram(numpy_array_2d)
+        format_fn = lambda x: f"{x:.1f}"
+        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        assert diagram_with_values.rank == diagram.rank
+        assert diagram_with_values._style.value_format_fn == format_fn
+
+    def test_fill_values_with_both_params(self, numpy_array_2d):
+        """Test fill_values with both font_size and format_fn."""
+        diagram = to_diagram(numpy_array_2d)
+        format_fn = lambda x: f"{int(x)}"
+        diagram_with_values = diagram.fill_values(font_size=0.5, format_fn=format_fn)
+        assert diagram_with_values.rank == diagram.rank
+        assert diagram_with_values._style.value_font_size == 0.5
+        assert diagram_with_values._style.value_format_fn == format_fn
+
+    def test_fill_values_percentage_formatting(self):
+        """Test fill_values with percentage format function."""
+        tensor = np.array([[0.123, 0.456], [0.789, 0.234]])
+        diagram = to_diagram(tensor)
+        format_fn = lambda x: f"{x*100:.1f}%"
+        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        assert diagram_with_values.rank == 2
+        assert diagram_with_values._style.value_format_fn == format_fn
+
+    def test_fill_values_scientific_notation(self):
+        """Test fill_values with scientific notation format function."""
+        tensor = np.array([[1000, 2000], [3000, 4000]])
+        diagram = to_diagram(tensor)
+        format_fn = lambda x: f"{x:.1e}"
+        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        assert diagram_with_values.rank == 2
+        assert diagram_with_values._style.value_format_fn == format_fn
+
+    def test_fill_values_integer_formatting(self):
+        """Test fill_values with integer format function."""
+        tensor = np.array([[1.5, 2.7], [3.2, 4.9]])
+        diagram = to_diagram(tensor)
+        format_fn = lambda x: str(int(x))
+        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        assert diagram_with_values.rank == 2
+        assert diagram_with_values._style.value_format_fn == format_fn
+
+    def test_fill_values_1d_with_custom_params(self, numpy_array_1d):
+        """Test fill_values with custom params on 1D tensor."""
+        diagram = to_diagram(numpy_array_1d)
+        format_fn = lambda x: f"{x:.0f}"
+        diagram_with_values = diagram.fill_values(font_size=1.0, format_fn=format_fn)
+        assert diagram_with_values.rank == 1
+        assert diagram_with_values._style.value_font_size == 1.0
+        assert diagram_with_values._style.value_format_fn == format_fn
+
+    def test_fill_values_none_params_defaults(self, numpy_array_2d):
+        """Test fill_values with None params uses defaults."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values(font_size=None, format_fn=None)
+        assert diagram_with_values.rank == diagram.rank
+        assert diagram_with_values._style.value_font_size is None
+        assert diagram_with_values._style.value_format_fn is None
+
+    def test_fill_values_chaining_with_fill_color(self, numpy_array_2d):
+        """Test fill_values can be chained with other styling methods."""
+        diagram = to_diagram(numpy_array_2d)
+        styled = diagram.fill_color("lightblue").fill_values(font_size=0.6)
+        assert styled.rank == 2
+        assert styled._style.value_font_size == 0.6
+
 
 class TestStyling:
     """Tests for TensorDiagram styling methods."""
@@ -340,9 +415,9 @@ class TestStyling:
             )
 
     def test_fill_values_3d(self, numpy_array_3d):
-        """Test fill_values() on 3D tensor raises NotImplementedError."""
+        """Test fill_values() on 3D tensor raises ValueError."""
         diagram = to_diagram(numpy_array_3d)
-        with pytest.raises(NotImplementedError, match="Showing values for 3D tensors is not supported"):
+        with pytest.raises(ValueError, match="Showing values for 3D tensors is not supported"):
             diagram.fill_values()
 
     # Function-based color tests
@@ -582,9 +657,9 @@ class TestMethodChaining:
         )
 
     def test_chain_multiple_operations_3d(self, numpy_array_3d):
-        """Test chaining multiple styling operations on 3D tensor raises NotImplementedError for fill_values."""
+        """Test chaining multiple styling operations on 3D tensor raises ValueError for fill_values."""
         diagram = to_diagram(numpy_array_3d)
-        with pytest.raises(NotImplementedError, match="Showing values for 3D tensors is not supported"):
+        with pytest.raises(ValueError, match="Showing values for 3D tensors is not supported"):
             styled_diagram = (
                 diagram.fill_color("purple")
                 .fill_opacity(0.6)

@@ -749,6 +749,77 @@ def generate_3d_gradient_order_DCR(fixtures_dir):
     )
 
 
+# fill_values with custom formatting reference generators
+def generate_2d_fill_values_custom_font_size(fixtures_dir):
+    """Generate reference_2d_fill_values_custom_font_size.svg"""
+    print("Generating reference_2d_fill_values_custom_font_size.svg...")
+    tensor = np.array([[1.5, 2.3], [3.7, 4.1]], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(font_size=0.8)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_custom_font_size.svg"), height=128
+    )
+
+
+def generate_2d_fill_values_percentage(fixtures_dir):
+    """Generate reference_2d_fill_values_percentage.svg"""
+    print("Generating reference_2d_fill_values_percentage.svg...")
+    tensor = np.array([[0.123, 0.456], [0.789, 0.234]], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x*100:.1f}%")
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_percentage.svg"), height=128
+    )
+
+
+def generate_2d_fill_values_scientific(fixtures_dir):
+    """Generate reference_2d_fill_values_scientific.svg"""
+    print("Generating reference_2d_fill_values_scientific.svg...")
+    tensor = np.array([[1000, 2000], [3000, 4000]], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.1e}")
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_scientific.svg"), height=128
+    )
+
+
+def generate_2d_fill_values_integer(fixtures_dir):
+    """Generate reference_2d_fill_values_integer.svg"""
+    print("Generating reference_2d_fill_values_integer.svg...")
+    tensor = np.array([[1.5, 2.7], [3.2, 4.9]], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: str(int(x)))
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_integer.svg"), height=128
+    )
+
+
+def generate_2d_fill_values_size_and_format(fixtures_dir):
+    """Generate reference_2d_fill_values_size_and_format.svg"""
+    print("Generating reference_2d_fill_values_size_and_format.svg...")
+    tensor = np.array([[1.234, 5.678], [9.012, 3.456]], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format_fn=lambda x: f"{x:.1f}")
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_size_and_format.svg"), height=128
+    )
+
+
+def generate_1d_fill_values_custom_font_size(fixtures_dir):
+    """Generate reference_1d_fill_values_custom_font_size.svg"""
+    print("Generating reference_1d_fill_values_custom_font_size.svg...")
+    tensor = np.array([1, 2, 3, 4, 5], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(font_size=1.0)
+    diagram.render_svg(
+        str(fixtures_dir / "reference_1d_fill_values_custom_font_size.svg"), height=128
+    )
+
+
+def generate_1d_fill_values_custom_format(fixtures_dir):
+    """Generate reference_1d_fill_values_custom_format.svg"""
+    print("Generating reference_1d_fill_values_custom_format.svg...")
+    tensor = np.array([1.1, 2.2, 3.3, 4.4, 5.5], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.0f}")
+    diagram.render_svg(
+        str(fixtures_dir / "reference_1d_fill_values_custom_format.svg"), height=128
+    )
+
+
 # Registry of all generators
 GENERATORS = {
     "shape_3x4": generate_shape_3x4,
@@ -819,6 +890,14 @@ GENERATORS = {
     "3d_gradient_order_RD": generate_3d_gradient_order_RD,
     "3d_gradient_order_RDC": generate_3d_gradient_order_RDC,
     "3d_gradient_order_DCR": generate_3d_gradient_order_DCR,
+    # fill_values with custom formatting
+    "2d_fill_values_custom_font_size": generate_2d_fill_values_custom_font_size,
+    "2d_fill_values_percentage": generate_2d_fill_values_percentage,
+    "2d_fill_values_scientific": generate_2d_fill_values_scientific,
+    "2d_fill_values_integer": generate_2d_fill_values_integer,
+    "2d_fill_values_size_and_format": generate_2d_fill_values_size_and_format,
+    "1d_fill_values_custom_font_size": generate_1d_fill_values_custom_font_size,
+    "1d_fill_values_custom_format": generate_1d_fill_values_custom_format,
 }
 
 

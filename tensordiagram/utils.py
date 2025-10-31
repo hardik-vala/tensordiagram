@@ -1,5 +1,5 @@
 from colour import Color
-from typing import Optional
+from typing import Callable, Optional
 
 import chalk
 
@@ -12,16 +12,23 @@ def draw_cell(
     opacity: float,
     value: Optional[Scalar] = None,
     font_size: Optional[float] = None,
+    format_fn: Optional[Callable[[Scalar], str]] = None,
 ) -> chalk.Diagram:
     c = chalk.rectangle(cell_size, cell_size).fill_color(color).fill_opacity(opacity)
 
     if value is not None:
-        value_str = f"{value:.2f}" if isinstance(value, float) else str(value)
-        value_len = len(value_str)
-        font_size_multiplier = 1.5 / value_len if value_len > 1 else 0.8
-        font_size = (
-            font_size if font_size is not None else cell_size * font_size_multiplier
-        )
+        if format_fn is not None:
+            value_str = format_fn(value)
+        else:
+            value_str = f"{value:.2f}" if isinstance(value, float) else str(value)
+
+        if font_size is None:
+            value_len = len(value_str)
+            font_size_multiplier = 1.5 / value_len if value_len > 1 else 0.8
+            font_size = cell_size * font_size_multiplier
+        else:
+            font_size = font_size
+
         txt = (
             chalk.text(value_str, font_size).fill_color(Color("black")).line_width(0.0)
         )
@@ -37,6 +44,7 @@ def draw_cube(
     # [TODO] Add value support later
     value: Optional[Scalar] = None,
     font_size: Optional[float] = None,
+    format_fn: Optional[Callable[[Scalar], str]] = None,
 ) -> chalk.Diagram:
     face_f = chalk.rectangle(cell_size, cell_size)
     face_t = chalk.rectangle(cell_size, cell_size * 0.5).shear_x(-1)

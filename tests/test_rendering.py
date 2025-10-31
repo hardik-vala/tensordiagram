@@ -1315,6 +1315,119 @@ class TestVisualRegression:
         else:
             pytest.skip(f"Reference image not found: {reference_path}")
 
+    # fill_values with custom formatting tests
+    def test_reference_2d_fill_values_custom_font_size(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values and custom font size matches reference."""
+        tensor = np.array([[1.5, 2.3], [3.7, 4.1]], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(font_size=0.8)
+        output_path = temp_output_dir / "2d_fill_values_custom_font_size.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_custom_font_size.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_fill_values_percentage_format(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values and percentage formatting matches reference."""
+        tensor = np.array([[0.123, 0.456], [0.789, 0.234]], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x*100:.1f}%")
+        output_path = temp_output_dir / "2d_fill_values_percentage.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_percentage.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_fill_values_scientific_notation(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values and scientific notation matches reference."""
+        tensor = np.array([[1000, 2000], [3000, 4000]], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.1e}")
+        output_path = temp_output_dir / "2d_fill_values_scientific.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_scientific.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_fill_values_integer_format(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values and integer formatting matches reference."""
+        tensor = np.array([[1.5, 2.7], [3.2, 4.9]], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: str(int(x)))
+        output_path = temp_output_dir / "2d_fill_values_integer.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_integer.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_fill_values_custom_size_and_format(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values using both custom font size and format matches reference."""
+        tensor = np.array([[1.234, 5.678], [9.012, 3.456]], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format_fn=lambda x: f"{x:.1f}")
+        output_path = temp_output_dir / "2d_fill_values_size_and_format.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_size_and_format.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_1d_fill_values_custom_font_size(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 1D tensor with fill_values and custom font size matches reference."""
+        tensor = np.array([1, 2, 3, 4, 5], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(font_size=1.0)
+        output_path = temp_output_dir / "1d_fill_values_custom_font_size.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_1d_fill_values_custom_font_size.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_1d_fill_values_custom_format(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 1D tensor with fill_values and custom formatting matches reference."""
+        tensor = np.array([1.1, 2.2, 3.3, 4.4, 5.5], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.0f}")
+        output_path = temp_output_dir / "1d_fill_values_custom_format.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_1d_fill_values_custom_format.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
 
 @pytest.mark.rendering
 class TestRenderingDimensions:

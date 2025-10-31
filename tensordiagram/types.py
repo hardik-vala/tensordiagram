@@ -2,7 +2,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass, fields
 from enum import Enum
-from typing import Any, Callable, ClassVar, Literal, Protocol, Optional, Union, TYPE_CHECKING
+from typing import (
+    Any,
+    Callable,
+    ClassVar,
+    Literal,
+    Protocol,
+    Optional,
+    Union,
+    TYPE_CHECKING,
+)
 from typing_extensions import Self
 
 import chalk
@@ -10,6 +19,7 @@ import chalk
 if TYPE_CHECKING:
     from dataclasses import Field
 
+FontSize = Union[int, float]
 Scalar = Union[int, float, str, bool]
 TensorLike = Any
 ColorFunction = Callable[[Union[int, tuple[int, ...]], Scalar], str]
@@ -69,12 +79,16 @@ class TensorStyle(Transferable):
         color_map: A tensor-like object that maps colors to the cells.
         opacity_map: A tensor-like object that maps opacities to the cells.
         show_values: Whether to show the values in the cells.
+        value_font_size: The font size for the cell values. Only used if show_values is True.
+        value_format_fn: A function to format the cell values as strings. Only used if show_values is True.
     """
 
     cell_size: Optional[float] = None
     color_map: Optional[TensorLike] = None
     opacity_map: Optional[TensorLike] = None
     show_values: Optional[bool] = None
+    value_font_size: Optional[FontSize] = None
+    value_format_fn: Optional[Callable[[Scalar], str]] = None
 
 
 @dataclass
@@ -228,8 +242,50 @@ class TensorStylable(Protocol):
         """
         ...
 
-    def fill_values(self) -> Self:
-        """Fills the tensor cells with their values as text."""
+    def fill_values(
+        self,
+        font_size: Optional[FontSize] = None,
+        format_fn: Optional[Callable[[Scalar], str]] = None,
+    ) -> Self:
+        """Fills the tensor cells with their values as text.
+
+        Args:
+            font_size: The size of the font for the text. If None, the size
+                is automatically calculated based on the cell size and the
+                length of the values. Auto-sizing ensures that longer numbers
+                fit within cells by reducing the font size proportionally.
+            format_fn: A custom function to format cell values as strings.
+                Takes a scalar value and returns a formatted string. If None,
+                floats are formatted to 2 decimal places (e.g., "1.23") and
+                other types use their default string representation.
+
+        Returns:
+            A new TensorDiagram with values displayed in the cells.
+
+        Examples:
+            Basic usage with default formatting:
+            >>> tensor = td.to_diagram(np.array([[1.5, 2.3], [3.7, 4.1]]))
+            >>> tensor.fill_values()
+
+            Custom font size:
+            >>> tensor = td.to_diagram(np.array([[1, 2], [3, 4]]))
+            >>> tensor.fill_values(font_size=0.8)
+
+            Custom formatting function for percentages:
+            >>> tensor = td.to_diagram(np.array([[0.123, 0.456], [0.789, 0.234]]))
+            >>> tensor.fill_values(format_fn=lambda x: f"{x*100:.1f}%")
+
+            Custom size and formatting:
+            >>> tensor = td.to_diagram(np.array([[1.234, 5.678], [9.012, 3.456]]))
+            >>> tensor.fill_values(font_size=0.5, format_fn=lambda x: f"{x:.1f}")
+
+        Note:
+            - This method is not supported for 3D tensors (rank 3).
+            - Default formatting: floats are shown as "x.xx" (2 decimal places).
+            - The text color is always black for maximum contrast with cell backgrounds.
+            - Custom format functions can return any string, allowing for units,
+              symbols, or custom number representations.
+        """
         ...
 
 
