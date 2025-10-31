@@ -153,6 +153,13 @@ All tests:
 pytest
 ```
 
+### deploy
+
+1. update version in pyproject.toml and commit
+2. `git tag vX.X.X`
+3. `git push origin vX.X.X` (auto-triggers gh action for publishing a new library)
+4. create a new gh release with the tag
+
 ## license
 
 MIT
