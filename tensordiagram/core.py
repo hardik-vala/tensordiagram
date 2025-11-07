@@ -20,7 +20,7 @@ from tensordiagram.types import (
     TensorOrder,
     TensorStyle,
 )
-from .utils import draw_cell, draw_cube
+from .utils import convert_tensor, draw_cell, draw_cube
 
 DEFAULT_HEIGHT = 128
 
@@ -210,39 +210,18 @@ class WrappedTensor:
 
     def __init__(self, tensor: TensorLike) -> None:
         super().__init__()
-        if "torch" in sys.modules:
-            import torch  # type: ignore[import-error]
+        _tensor = convert_tensor(tensor)
+        if len(_tensor.shape) == 0:
+            raise ValueError(
+                f"Tensor must have at least 1 dimension, got shape {_tensor.shape}"
+            )
+        if len(_tensor.shape) > 3:
+            raise ValueError(
+                f"Tensor must be at most 3-dimensional, got shape {_tensor.shape} "
+                f"with {len(_tensor.shape)} dimensions"
+            )
 
-            if isinstance(tensor, torch.Tensor):
-                self._tensor = tensor.detach().cpu().numpy()
-                return
-        if "jax" in sys.modules:
-            import jax  # type: ignore[import-error]
-
-            if isinstance(tensor, jax.Array):
-                self._tensor = np.asarray(tensor)
-                return
-        if "tensorflow" in sys.modules:
-            import tensorflow as tf  # type: ignore[import-error]
-
-            if isinstance(tensor, tf.Tensor):
-                self._tensor = tensor.numpy()
-                return
-        if "mlx.core" in sys.modules:
-            import mlx.core as mx  # type: ignore[import-error]
-
-            if isinstance(tensor, mx.array):
-                self._tensor = np.array(tensor)
-                return
-        # numpy
-        if isinstance(tensor, np.ndarray):
-            self._tensor = tensor
-            return
-        # list
-        if isinstance(tensor, list):
-            self._tensor = np.array(tensor)
-        else:
-            raise TypeError("Unsupported tensor type")
+        self._tensor = _tensor
 
     def __getitem__(self, key: Any) -> Any:
         return self._tensor[key]
@@ -300,17 +279,6 @@ def to_diagram(shape: Union[tuple[int, ...], TensorLike]) -> TensorDiagram:
             )
         wt = WrappedTensor(np.full(shape, 0))  # Placeholder tensor with zeros
     else:
-        if not hasattr(shape, "shape"):
-            raise TypeError("Input must be a shape tuple or tensor-like object")
-        if len(shape.shape) == 0:
-            raise ValueError(
-                f"Tensor must have at least 1 dimension, got shape {shape.shape}"
-            )
-        if len(shape.shape) > 3:
-            raise ValueError(
-                f"Tensor must be at most 3-dimensional, got shape {shape.shape} "
-                f"with {len(shape.shape)} dimensions"
-            )
         wt = WrappedTensor(shape)
     return TensorDiagramImpl(
         _wrapped_tensor=wt,
@@ -567,7 +535,7 @@ class TensorDiagramImpl(TensorDiagram):
             import cairo  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
-                'pycairo is required to render png diagrams. Please install pycairo with `pip install tensordiagram[cairo]`.'
+                "pycairo is required to render png diagrams. Please install pycairo with `pip install tensordiagram[cairo]`."
             ) from None
 
         height = height if height is not None else DEFAULT_HEIGHT
@@ -580,7 +548,7 @@ class TensorDiagramImpl(TensorDiagram):
             import cairosvg  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
-                'cairosvg is required to render svg diagrams. Please install cairosvg with `pip install tensordiagram[svg]`.'
+                "cairosvg is required to render svg diagrams. Please install cairosvg with `pip install tensordiagram[svg]`."
             ) from None
         height = height if height is not None else DEFAULT_HEIGHT
         return self._diagram.render_svg(path, height=height, width=width)
@@ -590,7 +558,7 @@ class TensorDiagramImpl(TensorDiagram):
             import pylatex  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
-                'pylatex is required to render pdf diagrams. Please install pylatex and latextools with `pip install tensordiagram[tikz]`.'
+                "pylatex is required to render pdf diagrams. Please install pylatex and latextools with `pip install tensordiagram[tikz]`."
             ) from None
         height = height if height is not None else DEFAULT_HEIGHT
         return self._diagram.render_pdf(path, height=height)

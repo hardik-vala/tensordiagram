@@ -1,9 +1,42 @@
 from colour import Color
+import sys
 from typing import Callable, Optional
 
 import chalk
+import numpy as np
 
-from tensordiagram.types import Scalar
+from tensordiagram.types import Scalar, TensorLike
+
+
+def convert_tensor(tensor: TensorLike) -> np.ndarray:
+    if "torch" in sys.modules:
+        import torch  # type: ignore[import-error]
+
+        if isinstance(tensor, torch.Tensor):
+            return tensor.detach().cpu().numpy()
+    if "jax" in sys.modules:
+        import jax  # type: ignore[import-error]
+
+        if isinstance(tensor, jax.Array):
+            return np.asarray(tensor)
+    if "tensorflow" in sys.modules:
+        import tensorflow as tf  # type: ignore[import-error]
+
+        if isinstance(tensor, tf.Tensor):
+            return tensor.numpy()
+    if "mlx.core" in sys.modules:
+        import mlx.core as mx  # type: ignore[import-error]
+
+        if isinstance(tensor, mx.array):
+            return np.array(tensor)
+    # numpy
+    if isinstance(tensor, np.ndarray):
+        return tensor
+    # list
+    if isinstance(tensor, list):
+        return np.array(tensor)
+    else:
+        raise TypeError("Unsupported tensor type")
 
 
 def draw_cell(

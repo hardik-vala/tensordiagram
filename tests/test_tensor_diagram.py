@@ -117,6 +117,76 @@ class TestToDiagram:
         diagram = to_diagram(tensor).fill_values()
         assert diagram.rank == 2
 
+    # Tests with Python lists
+    def test_to_diagram_with_list_1d(self):
+        """Test creating diagram from 1D Python list."""
+        list_1d = [1, 2, 3, 4]
+        diagram = to_diagram(list_1d)
+        assert diagram.rank == 1
+        assert diagram.tensor_shape == (4,)
+
+    def test_to_diagram_with_list_2d(self):
+        """Test creating diagram from 2D Python list."""
+        list_2d = [[1, 2, 3], [4, 5, 6]]
+        diagram = to_diagram(list_2d)
+        assert diagram.rank == 2
+        assert diagram.tensor_shape == (2, 3)
+
+    def test_to_diagram_with_list_2d_square(self):
+        """Test creating diagram from square 2D Python list."""
+        list_2d_square = [[1, 2], [3, 4]]
+        diagram = to_diagram(list_2d_square)
+        assert diagram.rank == 2
+        assert diagram.tensor_shape == (2, 2)
+
+    def test_to_diagram_with_list_3d(self):
+        """Test creating diagram from 3D Python list."""
+        list_3d = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        diagram = to_diagram(list_3d)
+        assert diagram.rank == 3
+        assert diagram.tensor_shape == (2, 2, 2)
+
+    def test_to_diagram_with_list_floats(self):
+        """Test creating diagram from list with float values."""
+        list_floats = [1.5, 2.3, 3.7, 4.1]
+        diagram = to_diagram(list_floats)
+        assert diagram.rank == 1
+        assert diagram.tensor_shape == (4,)
+
+    def test_to_diagram_with_list_mixed_types(self):
+        """Test creating diagram from list with mixed numeric types."""
+        list_mixed = [[1, 2.5], [3.0, 4]]
+        diagram = to_diagram(list_mixed)
+        assert diagram.rank == 2
+        assert diagram.tensor_shape == (2, 2)
+
+    def test_to_diagram_with_nested_list_and_fill_values(self):
+        """Test creating diagram from nested list and filling values."""
+        list_2d = [[10, 20, 30], [40, 50, 60]]
+        diagram = to_diagram(list_2d).fill_values()
+        assert diagram.rank == 2
+        assert diagram.tensor_shape == (2, 3)
+
+    def test_to_diagram_with_list_and_fill_color(self):
+        """Test creating diagram from list and applying color."""
+        list_1d = [1, 2, 3, 4, 5]
+        diagram = to_diagram(list_1d).fill_color("blue")
+        assert diagram.rank == 1
+        assert diagram.tensor_shape == (5,)
+
+    def test_to_diagram_with_list_and_styling(self):
+        """Test creating diagram from list and chaining styling methods."""
+        list_2d = [[1, 2], [3, 4]]
+        diagram = to_diagram(list_2d).fill_color("red").fill_opacity(0.5)
+        assert diagram.rank == 2
+        assert diagram.tensor_shape == (2, 2)
+
+    def test_to_diagram_with_list_invalid_too_many_dims(self):
+        """Test that >3D list raises ValueError."""
+        list_4d = [[[[1, 2], [3, 4]], [[5, 6], [7, 8]]]]
+        with pytest.raises(ValueError, match="at most 3-dimensional"):
+            to_diagram(list_4d)
+
 
 class TestTensorDiagramProperties:
     """Tests for TensorDiagram properties."""
