@@ -567,7 +567,7 @@ class TensorDiagramImpl(TensorDiagram):
             import cairo  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
-                'pycairo is required to render png diagrams. Please install pycairo with `pip install ".[cairo]"`.'
+                'pycairo is required to render png diagrams. Please install pycairo with `pip install tensordiagram[cairo]`.'
             ) from None
 
         height = height if height is not None else DEFAULT_HEIGHT
@@ -580,7 +580,7 @@ class TensorDiagramImpl(TensorDiagram):
             import cairosvg  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
-                'cairosvg is required to render svg diagrams. Please install cairosvg with `pip install ".[svg]"`.'
+                'cairosvg is required to render svg diagrams. Please install cairosvg with `pip install tensordiagram[svg]`.'
             ) from None
         height = height if height is not None else DEFAULT_HEIGHT
         return self._diagram.render_svg(path, height=height, width=width)
@@ -590,7 +590,7 @@ class TensorDiagramImpl(TensorDiagram):
             import pylatex  # type: ignore[import-error]
         except ImportError:
             raise ImportError(
-                'pylatex is required to render pdf diagrams. Please install pylatex with `pip install ".[tikz]"`.'
+                'pylatex is required to render pdf diagrams. Please install pylatex and latextools with `pip install tensordiagram[tikz]`.'
             ) from None
         height = height if height is not None else DEFAULT_HEIGHT
         return self._diagram.render_pdf(path, height=height)
