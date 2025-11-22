@@ -791,109 +791,109 @@ class TestAnnotateDimSize:
     def test_annotate_dim_size_1d_row(self, shape_1d):
         """Test annotating row dimension on 1D tensor."""
         diagram = to_diagram(shape_1d)
-        annotated = diagram.annotate_dim_size("row")
+        annotated = diagram.annotate_dim_size(0)
         assert annotated.rank == 1
         assert annotated.tensor_shape == shape_1d
 
     def test_annotate_dim_size_1d_all(self, shape_1d):
         """Test annotating all dimensions on 1D tensor."""
         diagram = to_diagram(shape_1d)
-        annotated = diagram.annotate_dim_size("all")
+        annotated = diagram.annotate_dim_size()
         assert annotated.rank == 1
         assert annotated.tensor_shape == shape_1d
 
     def test_annotate_dim_size_1d_with_color(self, shape_1d):
         """Test annotating 1D tensor with custom color."""
         diagram = to_diagram(shape_1d)
-        annotated = diagram.annotate_dim_size("row", color="red")
+        annotated = diagram.annotate_dim_size(0, color="red")
         assert annotated.rank == 1
         assert annotated.tensor_shape == shape_1d
 
     def test_annotate_dim_size_1d_invalid_col(self, shape_1d):
         """Test that 1D tensor rejects column dimension."""
         diagram = to_diagram(shape_1d)
-        with pytest.raises(ValueError, match="1D tensors can only annotate 'row' dimension"):
-            diagram.annotate_dim_size("col")
+        with pytest.raises(ValueError, match="1D tensors can only annotate dimension 0"):
+            diagram.annotate_dim_size(1)
 
     def test_annotate_dim_size_1d_invalid_depth(self, shape_1d):
         """Test that 1D tensor rejects depth dimension."""
         diagram = to_diagram(shape_1d)
-        with pytest.raises(ValueError, match="1D tensors can only annotate 'row' dimension"):
-            diagram.annotate_dim_size("depth")
+        with pytest.raises(ValueError, match="1D tensors can only annotate dimension 0"):
+            diagram.annotate_dim_size(2)
 
     def test_annotate_dim_size_2d_row(self, shape_2d):
         """Test annotating row dimension on 2D tensor."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_size("row")
+        annotated = diagram.annotate_dim_size(0)
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_size_2d_col(self, shape_2d):
         """Test annotating column dimension on 2D tensor."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_size("col")
+        annotated = diagram.annotate_dim_size(1)
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_size_2d_all(self, shape_2d):
         """Test annotating all dimensions on 2D tensor."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_size("all")
+        annotated = diagram.annotate_dim_size()
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_size_2d_with_color(self, shape_2d):
         """Test annotating 2D tensor with custom color."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_size("all", color="green")
+        annotated = diagram.annotate_dim_size(color="green")
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_size_2d_invalid_depth(self, shape_2d):
         """Test that 2D tensor rejects depth dimension."""
         diagram = to_diagram(shape_2d)
-        with pytest.raises(ValueError, match="2D tensors cannot annotate 'depth' dimension"):
-            diagram.annotate_dim_size("depth")
+        with pytest.raises(ValueError, match="2D tensors cannot annotate dimension 2"):
+            diagram.annotate_dim_size(2)
 
     def test_annotate_dim_size_3d_row(self, shape_3d):
         """Test annotating row dimension on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_size("row")
+        annotated = diagram.annotate_dim_size(0)
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_size_3d_col(self, shape_3d):
         """Test annotating column dimension on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_size("col")
+        annotated = diagram.annotate_dim_size(1)
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_size_3d_depth(self, shape_3d):
         """Test annotating depth dimension on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_size("depth")
+        annotated = diagram.annotate_dim_size(2)
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_size_3d_all(self, shape_3d):
         """Test annotating all dimensions on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_size("all")
+        annotated = diagram.annotate_dim_size()
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_size_3d_with_color(self, shape_3d):
         """Test annotating 3D tensor with custom color."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_size("all", color="blue")
+        annotated = diagram.annotate_dim_size(color="blue")
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_size_immutability(self, numpy_array_2d):
         """Test that annotate_dim_size returns new instance."""
         original = to_diagram(numpy_array_2d)
-        annotated = original.annotate_dim_size("all")
+        annotated = original.annotate_dim_size()
 
         # Should be different instances
         assert original is not annotated
@@ -906,7 +906,7 @@ class TestAnnotateDimSize:
     def test_annotate_dim_size_chain_with_fill_color(self, numpy_array_2d):
         """Test chaining annotate_dim_size with fill_color."""
         diagram = to_diagram(numpy_array_2d)
-        styled = diagram.annotate_dim_size("all", color="red").fill_color("blue")
+        styled = diagram.annotate_dim_size(color="red").fill_color("blue")
 
         assert styled.rank == 2
         assert styled.tensor_shape == (3, 4)
@@ -914,7 +914,7 @@ class TestAnnotateDimSize:
     def test_annotate_dim_size_chain_with_fill_region(self, numpy_array_2d):
         """Test chaining annotate_dim_size with fill_region."""
         diagram = to_diagram(numpy_array_2d)
-        styled = diagram.annotate_dim_size("all").fill_region(
+        styled = diagram.annotate_dim_size().fill_region(
             start_coord=(0, 0), end_coord=(2, 2), color="green", opacity=None
         )
 
@@ -925,9 +925,9 @@ class TestAnnotateDimSize:
         """Test multiple annotate_dim_size calls."""
         diagram = to_diagram(numpy_array_2d)
         # First call annotates row
-        annotated_row = diagram.annotate_dim_size("row", color="red")
+        annotated_row = diagram.annotate_dim_size(0, color="red")
         # Second call annotates col (should preserve row annotation)
-        annotated_both = annotated_row.annotate_dim_size("col", color="blue")
+        annotated_both = annotated_row.annotate_dim_size(1, color="blue")
 
         assert annotated_both.rank == 2
         assert annotated_both.tensor_shape == (3, 4)
@@ -937,7 +937,7 @@ class TestAnnotateDimSize:
         diagram = to_diagram(shape_2d)
         styled = (
             diagram
-            .annotate_dim_size("all", color="green")
+            .annotate_dim_size(color="green")
             .fill_color("red")
             .fill_opacity(0.7)
         )
@@ -950,8 +950,8 @@ class TestAnnotateDimSize:
         diagram = to_diagram(numpy_array_3d)
         annotated = (
             diagram
-            .annotate_dim_size("col", color="red")
-            .annotate_dim_size("depth", color="blue")
+            .annotate_dim_size(1, color="red")
+            .annotate_dim_size(2, color="blue")
         )
 
         assert annotated.rank == 3
@@ -964,109 +964,109 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_1d_row(self, shape_1d):
         """Test annotating row indices on 1D tensor."""
         diagram = to_diagram(shape_1d)
-        annotated = diagram.annotate_dim_indices("row")
+        annotated = diagram.annotate_dim_indices(0)
         assert annotated.rank == 1
         assert annotated.tensor_shape == shape_1d
 
     def test_annotate_dim_indices_1d_all(self, shape_1d):
         """Test annotating all indices on 1D tensor."""
         diagram = to_diagram(shape_1d)
-        annotated = diagram.annotate_dim_indices("all")
+        annotated = diagram.annotate_dim_indices()
         assert annotated.rank == 1
         assert annotated.tensor_shape == shape_1d
 
     def test_annotate_dim_indices_1d_with_color(self, shape_1d):
         """Test annotating 1D tensor indices with custom color."""
         diagram = to_diagram(shape_1d)
-        annotated = diagram.annotate_dim_indices("row", color="red")
+        annotated = diagram.annotate_dim_indices(0, color="red")
         assert annotated.rank == 1
         assert annotated.tensor_shape == shape_1d
 
     def test_annotate_dim_indices_1d_invalid_col(self, shape_1d):
         """Test that 1D tensor rejects column indices."""
         diagram = to_diagram(shape_1d)
-        with pytest.raises(ValueError, match="1D tensors can only annotate 'row' dimension"):
-            diagram.annotate_dim_indices("col")
+        with pytest.raises(ValueError, match="1D tensors can only annotate dimension 0"):
+            diagram.annotate_dim_indices(1)
 
     def test_annotate_dim_indices_1d_invalid_depth(self, shape_1d):
         """Test that 1D tensor rejects depth indices."""
         diagram = to_diagram(shape_1d)
-        with pytest.raises(ValueError, match="1D tensors can only annotate 'row' dimension"):
-            diagram.annotate_dim_indices("depth")
+        with pytest.raises(ValueError, match="1D tensors can only annotate dimension 0"):
+            diagram.annotate_dim_indices(2)
 
     def test_annotate_dim_indices_2d_row(self, shape_2d):
         """Test annotating row indices on 2D tensor."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("row")
+        annotated = diagram.annotate_dim_indices(0)
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_indices_2d_col(self, shape_2d):
         """Test annotating column indices on 2D tensor."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("col")
+        annotated = diagram.annotate_dim_indices(1)
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_indices_2d_all(self, shape_2d):
         """Test annotating all indices on 2D tensor."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("all")
+        annotated = diagram.annotate_dim_indices()
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_indices_2d_with_color(self, shape_2d):
         """Test annotating 2D tensor indices with custom color."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("all", color="blue")
+        annotated = diagram.annotate_dim_indices(color="blue")
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_indices_2d_invalid_depth(self, shape_2d):
         """Test that 2D tensor rejects depth indices."""
         diagram = to_diagram(shape_2d)
-        with pytest.raises(ValueError, match="2D tensors cannot annotate 'depth' dimension"):
-            diagram.annotate_dim_indices("depth")
+        with pytest.raises(ValueError, match="2D tensors cannot annotate dimension 2"):
+            diagram.annotate_dim_indices(2)
 
     def test_annotate_dim_indices_3d_row(self, shape_3d):
         """Test annotating row indices on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_indices("row")
+        annotated = diagram.annotate_dim_indices(0)
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_indices_3d_col(self, shape_3d):
         """Test annotating column indices on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_indices("col")
+        annotated = diagram.annotate_dim_indices(1)
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_indices_3d_depth(self, shape_3d):
         """Test annotating depth indices on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_indices("depth")
+        annotated = diagram.annotate_dim_indices(2)
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_indices_3d_all(self, shape_3d):
         """Test annotating all indices on 3D tensor."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_indices("all")
+        annotated = diagram.annotate_dim_indices()
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_indices_3d_with_color(self, shape_3d):
         """Test annotating 3D tensor indices with custom color."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_indices("all", color="green")
+        annotated = diagram.annotate_dim_indices(color="green")
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
 
     def test_annotate_dim_indices_immutability(self, numpy_array_2d):
         """Test that annotate_dim_indices returns new instance."""
         original = to_diagram(numpy_array_2d)
-        annotated = original.annotate_dim_indices("all")
+        annotated = original.annotate_dim_indices()
 
         # Should be different instances
         assert original is not annotated
@@ -1079,7 +1079,7 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_chain_with_fill_color(self, numpy_array_2d):
         """Test chaining annotate_dim_indices with fill_color."""
         diagram = to_diagram(numpy_array_2d)
-        styled = diagram.annotate_dim_indices("all", color="red").fill_color("blue")
+        styled = diagram.annotate_dim_indices(color="red").fill_color("blue")
 
         assert styled.rank == 2
         assert styled.tensor_shape == (3, 4)
@@ -1087,7 +1087,7 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_chain_with_fill_region(self, numpy_array_2d):
         """Test chaining annotate_dim_indices with fill_region."""
         diagram = to_diagram(numpy_array_2d)
-        styled = diagram.annotate_dim_indices("all").fill_region(
+        styled = diagram.annotate_dim_indices().fill_region(
             start_coord=(0, 0), end_coord=(2, 2), color="green", opacity=None
         )
 
@@ -1098,9 +1098,9 @@ class TestAnnotateDimIndices:
         """Test multiple annotate_dim_indices calls."""
         diagram = to_diagram(numpy_array_2d)
         # First call annotates row
-        annotated_row = diagram.annotate_dim_indices("row", color="red")
+        annotated_row = diagram.annotate_dim_indices(0, color="red")
         # Second call annotates col (should preserve row annotation)
-        annotated_both = annotated_row.annotate_dim_indices("col", color="blue")
+        annotated_both = annotated_row.annotate_dim_indices(1, color="blue")
 
         assert annotated_both.rank == 2
         assert annotated_both.tensor_shape == (3, 4)
@@ -1110,7 +1110,7 @@ class TestAnnotateDimIndices:
         diagram = to_diagram(shape_2d)
         styled = (
             diagram
-            .annotate_dim_indices("all", color="gray")
+            .annotate_dim_indices(color="gray")
             .fill_color("red")
             .fill_opacity(0.6)
         )
@@ -1123,8 +1123,8 @@ class TestAnnotateDimIndices:
         diagram = to_diagram(numpy_array_3d)
         annotated = (
             diagram
-            .annotate_dim_indices("col", color="red")
-            .annotate_dim_indices("depth", color="blue")
+            .annotate_dim_indices(1, color="red")
+            .annotate_dim_indices(2, color="blue")
         )
 
         assert annotated.rank == 3
@@ -1135,8 +1135,8 @@ class TestAnnotateDimIndices:
         diagram = to_diagram(numpy_array_2d)
         annotated = (
             diagram
-            .annotate_dim_indices("all", color="blue")
-            .annotate_dim_size("all", color="red")
+            .annotate_dim_indices(color="blue")
+            .annotate_dim_size(color="red")
         )
 
         assert annotated.rank == 2
@@ -1147,8 +1147,8 @@ class TestAnnotateDimIndices:
         diagram = to_diagram(numpy_array_2d)
         styled = (
             diagram
-            .annotate_dim_indices("row", color="gray")
-            .annotate_dim_size("col", color="green")
+            .annotate_dim_indices(0, color="gray")
+            .annotate_dim_size(1, color="green")
             .fill_color("blue")
             .fill_opacity(0.5)
         )
@@ -1159,14 +1159,14 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_default_color(self, shape_2d):
         """Test annotating indices with default color (None)."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("all")
+        annotated = diagram.annotate_dim_indices()
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
 
     def test_annotate_dim_indices_with_font_size_1d(self, shape_1d):
         """Test annotating 1D tensor indices with custom font size."""
         diagram = to_diagram(shape_1d)
-        annotated = diagram.annotate_dim_indices("row", font_size=0.8)
+        annotated = diagram.annotate_dim_indices(0, font_size=0.8)
         assert annotated.rank == 1
         assert annotated.tensor_shape == shape_1d
         assert annotated._row_indices_annotation.font_size == 0.8
@@ -1174,7 +1174,7 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_with_font_size_2d(self, shape_2d):
         """Test annotating 2D tensor indices with custom font size."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("all", font_size=1.2)
+        annotated = diagram.annotate_dim_indices(font_size=1.2)
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
         assert annotated._row_indices_annotation.font_size == 1.2
@@ -1183,7 +1183,7 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_with_font_size_3d(self, shape_3d):
         """Test annotating 3D tensor indices with custom font size."""
         diagram = to_diagram(shape_3d)
-        annotated = diagram.annotate_dim_indices("all", font_size=0.6)
+        annotated = diagram.annotate_dim_indices(font_size=0.6)
         assert annotated.rank == 3
         assert annotated.tensor_shape == shape_3d
         assert annotated._row_indices_annotation.font_size == 0.6
@@ -1193,7 +1193,7 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_with_color_and_font_size(self, shape_2d):
         """Test annotating indices with both color and font size."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("row", color="red", font_size=0.9)
+        annotated = diagram.annotate_dim_indices(0, color="red", font_size=0.9)
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
         assert annotated._row_indices_annotation.color == "red"
@@ -1202,7 +1202,7 @@ class TestAnnotateDimIndices:
     def test_annotate_dim_indices_font_size_none_defaults(self, shape_2d):
         """Test that None font_size uses default behavior."""
         diagram = to_diagram(shape_2d)
-        annotated = diagram.annotate_dim_indices("row", font_size=None)
+        annotated = diagram.annotate_dim_indices(0, font_size=None)
         assert annotated.rank == 2
         assert annotated.tensor_shape == shape_2d
         assert annotated._row_indices_annotation.font_size is None

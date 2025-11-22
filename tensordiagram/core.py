@@ -912,37 +912,37 @@ class TensorDiagramImpl(TensorDiagram):
 
     def annotate_dim_indices(
         self,
-        dim: Literal["row", "col", "depth", "all"] = "all",
+        dim: Optional[Literal[0, 1, 2]] = None,
         color: Optional[str] = None,
         font_size: Optional[FontSize] = None,
     ) -> TensorDiagram:
-        if self.rank == 1 and dim != "row" and dim != "all":
-            raise ValueError("1D tensors can only annotate 'row' dimension")
-        if self.rank == 2 and dim == "depth":
-            raise ValueError("2D tensors cannot annotate 'depth' dimension")
-        if self.rank == 3 and dim not in ["row", "col", "depth", "all"]:
+        if self.rank == 1 and dim is not None and dim != 0:
+            raise ValueError("1D tensors can only annotate dimension 0")
+        if self.rank == 2 and dim == 2:
+            raise ValueError("2D tensors cannot annotate dimension 2")
+        if self.rank == 3 and dim is not None and dim not in [0, 1, 2]:
             raise ValueError(
-                "3D tensors can only annotate 'row', 'col', or 'depth' dimension"
+                "3D tensors can only annotate dimensions 0, 1, or 2"
             )
 
         row_annotation = self._row_indices_annotation
         col_annotation = self._col_indices_annotation
         depth_annotation = self._depth_indices_annotation
-        if dim == "row" or dim == "all":
+        if dim == 0 or dim is None:
             if self._row_indices_annotation is None:
                 row_annotation = TensorAnnotation(color, font_size)
             else:
                 row_annotation = self._row_indices_annotation.transfer(
                     TensorAnnotation(color, font_size)
                 )
-        if (dim == "col" or dim == "all") and self.rank >= 2:
+        if (dim == 1 or dim is None) and self.rank >= 2:
             if self._col_indices_annotation is None:
                 col_annotation = TensorAnnotation(color, font_size)
             else:
                 col_annotation = self._col_indices_annotation.transfer(
                     TensorAnnotation(color, font_size)
                 )
-        if (dim == "depth" or dim == "all") and self.rank == 3:
+        if (dim == 2 or dim is None) and self.rank == 3:
             if self._depth_indices_annotation is None:
                 depth_annotation = TensorAnnotation(color, font_size)
             else:
@@ -963,36 +963,36 @@ class TensorDiagramImpl(TensorDiagram):
 
     def annotate_dim_size(
         self,
-        dim: Literal["row", "col", "depth", "all"] = "all",
+        dim: Optional[Literal[0, 1, 2]] = None,
         color: Optional[str] = None,
     ) -> TensorDiagram:
-        if self.rank == 1 and dim != "row" and dim != "all":
-            raise ValueError("1D tensors can only annotate 'row' dimension")
-        if self.rank == 2 and dim == "depth":
-            raise ValueError("2D tensors cannot annotate 'depth' dimension")
-        if self.rank == 3 and dim not in ["row", "col", "depth", "all"]:
+        if self.rank == 1 and dim is not None and dim != 0:
+            raise ValueError("1D tensors can only annotate dimension 0")
+        if self.rank == 2 and dim == 2:
+            raise ValueError("2D tensors cannot annotate dimension 2")
+        if self.rank == 3 and dim is not None and dim not in [0, 1, 2]:
             raise ValueError(
-                "3D tensors can only annotate 'row', 'col', or 'depth' dimension"
+                "3D tensors can only annotate dimensions 0, 1, or 2"
             )
 
         row_annotation = self._row_size_annotation
         col_annotation = self._col_size_annotation
         depth_annotation = self._depth_size_annotation
-        if dim == "row" or dim == "all":
+        if dim == 0 or dim is None:
             if self._row_size_annotation is None:
                 row_annotation = TensorAnnotation(color)
             else:
                 row_annotation = self._row_size_annotation.transfer(
                     TensorAnnotation(color)
                 )
-        if (dim == "col" or dim == "all") and self.rank >= 2:
+        if (dim == 1 or dim is None) and self.rank >= 2:
             if self._col_size_annotation is None:
                 col_annotation = TensorAnnotation(color)
             else:
                 col_annotation = self._col_size_annotation.transfer(
                     TensorAnnotation(color)
                 )
-        if (dim == "depth" or dim == "all") and self.rank == 3:
+        if (dim == 2 or dim is None) and self.rank == 3:
             if self._depth_size_annotation is None:
                 depth_annotation = TensorAnnotation(color)
             else:

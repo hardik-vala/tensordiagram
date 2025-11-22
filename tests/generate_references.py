@@ -202,7 +202,7 @@ def generate_1d_annotate_row_default(fixtures_dir):
     """Generate reference_1d_annotate_row_default.svg"""
     print("Generating reference_1d_annotate_row_default.svg...")
     tensor = np.arange(5, dtype=np.float32)
-    diagram = td.to_diagram(tensor).annotate_dim_size("row")
+    diagram = td.to_diagram(tensor).annotate_dim_size(0)
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_annotate_row_default.svg"), height=128
     )
@@ -212,7 +212,7 @@ def generate_1d_annotate_row_custom(fixtures_dir):
     """Generate reference_1d_annotate_row_custom.svg"""
     print("Generating reference_1d_annotate_row_custom.svg...")
     tensor = np.arange(5, dtype=np.float32)
-    diagram = td.to_diagram(tensor).annotate_dim_size("row", color="red")
+    diagram = td.to_diagram(tensor).annotate_dim_size(0, color="red")
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_annotate_row_custom.svg"), height=128
     )
@@ -222,7 +222,7 @@ def generate_2d_annotate_row_only(fixtures_dir):
     """Generate reference_2d_annotate_row_only.svg"""
     print("Generating reference_2d_annotate_row_only.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_size("row")
+    diagram = td.to_diagram(tensor).annotate_dim_size(0)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_row_only.svg"), height=128
     )
@@ -232,7 +232,7 @@ def generate_2d_annotate_col_only(fixtures_dir):
     """Generate reference_2d_annotate_col_only.svg"""
     print("Generating reference_2d_annotate_col_only.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_size("col")
+    diagram = td.to_diagram(tensor).annotate_dim_size(1)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_col_only.svg"), height=128
     )
@@ -242,7 +242,7 @@ def generate_2d_annotate_all_default(fixtures_dir):
     """Generate reference_2d_annotate_all_default.svg"""
     print("Generating reference_2d_annotate_all_default.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_size("all")
+    diagram = td.to_diagram(tensor).annotate_dim_size()
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_all_default.svg"), height=128
     )
@@ -252,7 +252,7 @@ def generate_2d_annotate_all_custom(fixtures_dir):
     """Generate reference_2d_annotate_all_custom.svg"""
     print("Generating reference_2d_annotate_all_custom.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_size("all", color="green")
+    diagram = td.to_diagram(tensor).annotate_dim_size(color="green")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_all_custom.svg"), height=128
     )
@@ -262,7 +262,7 @@ def generate_3d_annotate_all(fixtures_dir):
     """Generate reference_3d_annotate_all.svg"""
     print("Generating reference_3d_annotate_all.svg...")
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_size("all")
+    diagram = td.to_diagram(tensor).annotate_dim_size()
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_annotate_all.svg"), height=128
     )
@@ -273,7 +273,7 @@ def generate_3d_annotate_col_depth(fixtures_dir):
     print("Generating reference_3d_annotate_col_depth.svg...")
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
     diagram = (
-        td.to_diagram(tensor).annotate_dim_size("col").annotate_dim_size("depth")
+        td.to_diagram(tensor).annotate_dim_size(1).annotate_dim_size(2)
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_annotate_col_depth.svg"), height=128
@@ -286,7 +286,7 @@ def generate_2d_annotate_fill_color(fixtures_dir):
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("all", color="blue")
+        .annotate_dim_size(color="blue")
         .fill_color("blue")
     )
     diagram.render_svg(
@@ -300,7 +300,7 @@ def generate_2d_annotate_fill_region(fixtures_dir):
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("all", color="red")
+        .annotate_dim_size(color="red")
         .fill_region(
             start_coord=(0, 0), end_coord=(2, 2), color="green", opacity=None
         )
@@ -314,7 +314,7 @@ def generate_1d_annotate_indices(fixtures_dir):
     """Generate reference_1d_annotate_indices.svg"""
     print("Generating reference_1d_annotate_indices.svg...")
     tensor = np.arange(8, dtype=np.float32)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all")
+    diagram = td.to_diagram(tensor).annotate_dim_indices()
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_annotate_indices.svg"), height=128
     )
@@ -324,7 +324,7 @@ def generate_1d_annotate_indices_color(fixtures_dir):
     """Generate reference_1d_annotate_indices_color.svg"""
     print("Generating reference_1d_annotate_indices_color.svg...")
     tensor = np.arange(8, dtype=np.float32)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all", color="red")
+    diagram = td.to_diagram(tensor).annotate_dim_indices(color="red")
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_annotate_indices_color.svg"), height=128
     )
@@ -335,7 +335,7 @@ def generate_1d_annotate_size_indices(fixtures_dir):
     print("Generating reference_1d_annotate_size_indices.svg...")
     tensor = np.arange(8, dtype=np.float32)
     diagram = (
-        td.to_diagram(tensor).annotate_dim_size("all").annotate_dim_indices("all")
+        td.to_diagram(tensor).annotate_dim_size().annotate_dim_indices()
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_annotate_size_indices.svg"), height=128
@@ -346,7 +346,7 @@ def generate_2d_annotate_indices_row(fixtures_dir):
     """Generate reference_2d_annotate_indices_row.svg"""
     print("Generating reference_2d_annotate_indices_row.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("row")
+    diagram = td.to_diagram(tensor).annotate_dim_indices(0)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_row.svg"), height=128
     )
@@ -356,7 +356,7 @@ def generate_2d_annotate_indices_col(fixtures_dir):
     """Generate reference_2d_annotate_indices_col.svg"""
     print("Generating reference_2d_annotate_indices_col.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("col")
+    diagram = td.to_diagram(tensor).annotate_dim_indices(1)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_col.svg"), height=128
     )
@@ -366,7 +366,7 @@ def generate_2d_annotate_indices_all(fixtures_dir):
     """Generate reference_2d_annotate_indices_all.svg"""
     print("Generating reference_2d_annotate_indices_all.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all")
+    diagram = td.to_diagram(tensor).annotate_dim_indices()
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_all.svg"), height=128
     )
@@ -376,7 +376,7 @@ def generate_2d_annotate_indices_all_color(fixtures_dir):
     """Generate reference_2d_annotate_indices_all_color.svg"""
     print("Generating reference_2d_annotate_indices_all_color.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all", color="blue")
+    diagram = td.to_diagram(tensor).annotate_dim_indices(color="blue")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_all_color.svg"), height=128
     )
@@ -388,8 +388,8 @@ def generate_2d_annotate_size_indices(fixtures_dir):
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("all", color="red")
-        .annotate_dim_indices("all", color="blue")
+        .annotate_dim_size(color="red")
+        .annotate_dim_indices(color="blue")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_size_indices.svg"), height=128
@@ -400,7 +400,7 @@ def generate_3d_annotate_indices_row(fixtures_dir):
     """Generate reference_3d_annotate_indices_row.svg"""
     print("Generating reference_3d_annotate_indices_row.svg...")
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("row")
+    diagram = td.to_diagram(tensor).annotate_dim_indices(0)
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_annotate_indices_row.svg"), height=128
     )
@@ -410,7 +410,7 @@ def generate_3d_annotate_indices_all(fixtures_dir):
     """Generate reference_3d_annotate_indices_all.svg"""
     print("Generating reference_3d_annotate_indices_all.svg...")
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all")
+    diagram = td.to_diagram(tensor).annotate_dim_indices()
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_annotate_indices_all.svg"), height=128
     )
@@ -422,8 +422,8 @@ def generate_3d_annotate_indices_col_depth(fixtures_dir):
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_indices("col", color="red")
-        .annotate_dim_indices("depth", color="blue")
+        .annotate_dim_indices(1, color="red")
+        .annotate_dim_indices(2, color="blue")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_annotate_indices_col_depth.svg"), height=128
@@ -436,8 +436,8 @@ def generate_3d_annotate_size_indices(fixtures_dir):
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("all", color="green")
-        .annotate_dim_indices("all", color="gray")
+        .annotate_dim_size(color="green")
+        .annotate_dim_indices(color="gray")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_annotate_size_indices.svg"), height=128
@@ -450,7 +450,7 @@ def generate_2d_annotate_indices_fill_color(fixtures_dir):
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_indices("all", color="red")
+        .annotate_dim_indices(color="red")
         .fill_color("blue")
     )
     diagram.render_svg(
@@ -464,8 +464,8 @@ def generate_2d_row_size_col_indices(fixtures_dir):
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("row", color="red")
-        .annotate_dim_indices("col", color="blue")
+        .annotate_dim_size(0, color="red")
+        .annotate_dim_indices(1, color="blue")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_row_size_col_indices.svg"), height=128
@@ -478,8 +478,8 @@ def generate_2d_row_indices_col_size(fixtures_dir):
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_indices("row", color="blue")
-        .annotate_dim_size("col", color="red")
+        .annotate_dim_indices(0, color="blue")
+        .annotate_dim_size(1, color="red")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_row_indices_col_size.svg"), height=128
@@ -492,9 +492,9 @@ def generate_3d_row_size_col_indices_depth_size(fixtures_dir):
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("row", color="red")
-        .annotate_dim_indices("col", color="blue")
-        .annotate_dim_size("depth", color="green")
+        .annotate_dim_size(0, color="red")
+        .annotate_dim_indices(1, color="blue")
+        .annotate_dim_size(2, color="green")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_row_size_col_indices_depth_size.svg"), height=128
@@ -507,9 +507,9 @@ def generate_3d_row_indices_col_size_depth_indices(fixtures_dir):
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_indices("row", color="blue")
-        .annotate_dim_size("col", color="red")
-        .annotate_dim_indices("depth", color="gray")
+        .annotate_dim_indices(0, color="blue")
+        .annotate_dim_size(1, color="red")
+        .annotate_dim_indices(2, color="gray")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_row_indices_col_size_depth_indices.svg"), height=128
@@ -522,9 +522,9 @@ def generate_3d_row_size_col_size_depth_indices(fixtures_dir):
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("row", color="red")
-        .annotate_dim_size("col", color="green")
-        .annotate_dim_indices("depth", color="blue")
+        .annotate_dim_size(0, color="red")
+        .annotate_dim_size(1, color="green")
+        .annotate_dim_indices(2, color="blue")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_row_size_col_size_depth_indices.svg"), height=128
@@ -537,9 +537,9 @@ def generate_3d_row_indices_col_indices_depth_size(fixtures_dir):
     tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_indices("row", color="blue")
-        .annotate_dim_indices("col", color="gray")
-        .annotate_dim_size("depth", color="red")
+        .annotate_dim_indices(0, color="blue")
+        .annotate_dim_indices(1, color="gray")
+        .annotate_dim_size(2, color="red")
     )
     diagram.render_svg(
         str(fixtures_dir / "reference_3d_row_indices_col_indices_depth_size.svg"), height=128
@@ -552,8 +552,8 @@ def generate_2d_mixed_annotate_fill_region(fixtures_dir):
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
     diagram = (
         td.to_diagram(tensor)
-        .annotate_dim_size("row", color="red")
-        .annotate_dim_indices("col", color="blue")
+        .annotate_dim_size(0, color="red")
+        .annotate_dim_indices(1, color="blue")
         .fill_region(start_coord=(0, 0), end_coord=(2, 2), color="green", opacity=None)
     )
     diagram.render_svg(
@@ -825,7 +825,7 @@ def generate_1d_annotate_indices_custom_font_size(fixtures_dir):
     """Generate reference_1d_annotate_indices_custom_font_size.svg"""
     print("Generating reference_1d_annotate_indices_custom_font_size.svg...")
     tensor = np.arange(8, dtype=np.float32)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.5)
+    diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=0.5)
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_annotate_indices_custom_font_size.svg"), height=128
     )
@@ -835,7 +835,7 @@ def generate_2d_annotate_indices_custom_font_size(fixtures_dir):
     """Generate reference_2d_annotate_indices_custom_font_size.svg"""
     print("Generating reference_2d_annotate_indices_custom_font_size.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.6)
+    diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=0.6)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_custom_font_size.svg"), height=128
     )
@@ -845,7 +845,7 @@ def generate_2d_annotate_indices_large_font_size(fixtures_dir):
     """Generate reference_2d_annotate_indices_large_font_size.svg"""
     print("Generating reference_2d_annotate_indices_large_font_size.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=1.2)
+    diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=1.2)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_large_font_size.svg"), height=128
     )
@@ -855,7 +855,7 @@ def generate_2d_annotate_indices_small_font_size(fixtures_dir):
     """Generate reference_2d_annotate_indices_small_font_size.svg"""
     print("Generating reference_2d_annotate_indices_small_font_size.svg...")
     tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-    diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.3)
+    diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=0.3)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_small_font_size.svg"), height=128
     )

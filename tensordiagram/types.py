@@ -294,41 +294,43 @@ class TensorAnnotatable(Protocol):
 
     def annotate_dim_indices(
         self,
-        dim: Literal["row", "col", "depth", "all"] = "all",
+        dim: Optional[Literal[0, 1, 2]] = None,
         color: Optional[str] = None,
         font_size: Optional[FontSize] = None,
     ) -> Self:
         """Annotates dimensions of the tensor with indices.
 
         Args:
-            dim: The dimension to annotate.
+            dim: The dimension to annotate (0=rows, 1=columns, 2=depth).
+                If None, annotates all dimensions.
             color: The color of the index text.
             font_size: The font size of the index text.
 
         Examples:
             >>> d = td.to_diagram((3, 4))
-            >>> d.annotate_dim_indices("row", color="green")
+            >>> d.annotate_dim_indices(0, color="green")
             >>>
             >>> d = td.to_diagram((3, 4))
-            >>> d.annotate_dim_indices("all", font_size=2)
+            >>> d.annotate_dim_indices(font_size=2)
         """
         ...
 
     def annotate_dim_size(
         self,
-        dim: Literal["row", "col", "depth", "all"] = "all",
+        dim: Optional[Literal[0, 1, 2]] = None,
         color: Optional[str] = None,
     ) -> Self:
         """Annotates dimensions of the tensor with their size.
 
         Args:
-            dim: The dimension to annotate.
+            dim: The dimension to annotate (0=rows, 1=columns, 2=depth).
+                If None, annotates all dimensions.
             color: The color of the size annotations.
 
         Examples:
             >>> d = TensorDiagram(np.arange(12).reshape(3, 4))
-            >>> d.annotate_dim_size("col", color="purple")
-            >>> d.annotate_dim_size("all")
+            >>> d.annotate_dim_size(1, color="purple")
+            >>> d.annotate_dim_size()
         """
         ...
 

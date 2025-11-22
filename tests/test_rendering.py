@@ -479,7 +479,7 @@ class TestVisualRegression:
     ):
         """Test 1D tensor with row size annotation (default color) matches reference."""
         tensor = np.arange(5, dtype=np.float32)
-        diagram = td.to_diagram(tensor).annotate_dim_size("row")
+        diagram = td.to_diagram(tensor).annotate_dim_size(0)
         output_path = temp_output_dir / "1d_annotate_row_default.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -495,7 +495,7 @@ class TestVisualRegression:
     ):
         """Test 1D tensor with row size annotation (custom color) matches reference."""
         tensor = np.arange(5, dtype=np.float32)
-        diagram = td.to_diagram(tensor).annotate_dim_size("row", color="red")
+        diagram = td.to_diagram(tensor).annotate_dim_size(0, color="red")
         output_path = temp_output_dir / "1d_annotate_row_custom.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -511,7 +511,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with row size annotation only matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_size("row")
+        diagram = td.to_diagram(tensor).annotate_dim_size(0)
         output_path = temp_output_dir / "2d_annotate_row_only.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -527,7 +527,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with column size annotation only matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_size("col")
+        diagram = td.to_diagram(tensor).annotate_dim_size(1)
         output_path = temp_output_dir / "2d_annotate_col_only.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -543,7 +543,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with all dimensions annotated (default color) matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_size("all")
+        diagram = td.to_diagram(tensor).annotate_dim_size()
         output_path = temp_output_dir / "2d_annotate_all_default.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -559,7 +559,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with all dimensions annotated (custom color) matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_size("all", color="green")
+        diagram = td.to_diagram(tensor).annotate_dim_size(color="green")
         output_path = temp_output_dir / "2d_annotate_all_custom.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -575,7 +575,7 @@ class TestVisualRegression:
     ):
         """Test 3D tensor with all dimensions annotated matches reference."""
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_size("all")
+        diagram = td.to_diagram(tensor).annotate_dim_size()
         output_path = temp_output_dir / "3d_annotate_all.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -593,8 +593,8 @@ class TestVisualRegression:
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("col")
-            .annotate_dim_size("depth")
+            .annotate_dim_size(1)
+            .annotate_dim_size(2)
         )
         output_path = temp_output_dir / "3d_annotate_col_depth.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -613,7 +613,7 @@ class TestVisualRegression:
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("all", color="blue")
+            .annotate_dim_size(color="blue")
             .fill_color("blue")
         )
         output_path = temp_output_dir / "2d_annotate_fill_color.svg"
@@ -633,7 +633,7 @@ class TestVisualRegression:
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("all", color="red")
+            .annotate_dim_size(color="red")
             .fill_region(start_coord=(0, 0), end_coord=(2, 2), color="green", opacity=None)
         )
         output_path = temp_output_dir / "2d_annotate_fill_region.svg"
@@ -652,7 +652,7 @@ class TestVisualRegression:
     ):
         """Test 1D tensor with indices annotated matches reference."""
         tensor = np.arange(8, dtype=np.float32)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all")
+        diagram = td.to_diagram(tensor).annotate_dim_indices()
         output_path = temp_output_dir / "1d_annotate_indices.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -668,7 +668,7 @@ class TestVisualRegression:
     ):
         """Test 1D tensor with indices annotated (custom color) matches reference."""
         tensor = np.arange(8, dtype=np.float32)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all", color="red")
+        diagram = td.to_diagram(tensor).annotate_dim_indices(color="red")
         output_path = temp_output_dir / "1d_annotate_indices_color.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -686,8 +686,8 @@ class TestVisualRegression:
         tensor = np.arange(8, dtype=np.float32)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("all")
-            .annotate_dim_indices("all")
+            .annotate_dim_size()
+            .annotate_dim_indices()
         )
         output_path = temp_output_dir / "1d_annotate_size_indices.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -704,7 +704,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with row indices annotated matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("row")
+        diagram = td.to_diagram(tensor).annotate_dim_indices(0)
         output_path = temp_output_dir / "2d_annotate_indices_row.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -720,7 +720,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with column indices annotated matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("col")
+        diagram = td.to_diagram(tensor).annotate_dim_indices(1)
         output_path = temp_output_dir / "2d_annotate_indices_col.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -736,7 +736,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with all indices annotated matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all")
+        diagram = td.to_diagram(tensor).annotate_dim_indices()
         output_path = temp_output_dir / "2d_annotate_indices_all.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -752,7 +752,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with all indices annotated (custom color) matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all", color="blue")
+        diagram = td.to_diagram(tensor).annotate_dim_indices(color="blue")
         output_path = temp_output_dir / "2d_annotate_indices_all_color.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -770,8 +770,8 @@ class TestVisualRegression:
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("all", color="red")
-            .annotate_dim_indices("all", color="blue")
+            .annotate_dim_size(color="red")
+            .annotate_dim_indices(color="blue")
         )
         output_path = temp_output_dir / "2d_annotate_size_indices.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -788,7 +788,7 @@ class TestVisualRegression:
     ):
         """Test 3D tensor with row indices annotated matches reference."""
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("row")
+        diagram = td.to_diagram(tensor).annotate_dim_indices(0)
         output_path = temp_output_dir / "3d_annotate_indices_row.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -804,7 +804,7 @@ class TestVisualRegression:
     ):
         """Test 3D tensor with all indices annotated matches reference."""
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all")
+        diagram = td.to_diagram(tensor).annotate_dim_indices()
         output_path = temp_output_dir / "3d_annotate_indices_all.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -822,8 +822,8 @@ class TestVisualRegression:
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_indices("col", color="red")
-            .annotate_dim_indices("depth", color="blue")
+            .annotate_dim_indices(1, color="red")
+            .annotate_dim_indices(2, color="blue")
         )
         output_path = temp_output_dir / "3d_annotate_indices_col_depth.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -842,8 +842,8 @@ class TestVisualRegression:
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("all", color="green")
-            .annotate_dim_indices("all", color="gray")
+            .annotate_dim_size(color="green")
+            .annotate_dim_indices(color="gray")
         )
         output_path = temp_output_dir / "3d_annotate_size_indices.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -862,7 +862,7 @@ class TestVisualRegression:
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_indices("all", color="red")
+            .annotate_dim_indices(color="red")
             .fill_color("blue")
         )
         output_path = temp_output_dir / "2d_annotate_indices_fill_color.svg"
@@ -883,8 +883,8 @@ class TestVisualRegression:
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("row", color="red")
-            .annotate_dim_indices("col", color="blue")
+            .annotate_dim_size(0, color="red")
+            .annotate_dim_indices(1, color="blue")
         )
         output_path = temp_output_dir / "2d_row_size_col_indices.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -903,8 +903,8 @@ class TestVisualRegression:
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_indices("row", color="blue")
-            .annotate_dim_size("col", color="red")
+            .annotate_dim_indices(0, color="blue")
+            .annotate_dim_size(1, color="red")
         )
         output_path = temp_output_dir / "2d_row_indices_col_size.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -923,9 +923,9 @@ class TestVisualRegression:
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("row", color="red")
-            .annotate_dim_indices("col", color="blue")
-            .annotate_dim_size("depth", color="green")
+            .annotate_dim_size(0, color="red")
+            .annotate_dim_indices(1, color="blue")
+            .annotate_dim_size(2, color="green")
         )
         output_path = temp_output_dir / "3d_row_size_col_indices_depth_size.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -944,9 +944,9 @@ class TestVisualRegression:
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_indices("row", color="blue")
-            .annotate_dim_size("col", color="red")
-            .annotate_dim_indices("depth", color="gray")
+            .annotate_dim_indices(0, color="blue")
+            .annotate_dim_size(1, color="red")
+            .annotate_dim_indices(2, color="gray")
         )
         output_path = temp_output_dir / "3d_row_indices_col_size_depth_indices.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -965,9 +965,9 @@ class TestVisualRegression:
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("row", color="red")
-            .annotate_dim_size("col", color="green")
-            .annotate_dim_indices("depth", color="blue")
+            .annotate_dim_size(0, color="red")
+            .annotate_dim_size(1, color="green")
+            .annotate_dim_indices(2, color="blue")
         )
         output_path = temp_output_dir / "3d_row_size_col_size_depth_indices.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -986,9 +986,9 @@ class TestVisualRegression:
         tensor = np.arange(24, dtype=np.float32).reshape(2, 3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_indices("row", color="blue")
-            .annotate_dim_indices("col", color="gray")
-            .annotate_dim_size("depth", color="red")
+            .annotate_dim_indices(0, color="blue")
+            .annotate_dim_indices(1, color="gray")
+            .annotate_dim_size(2, color="red")
         )
         output_path = temp_output_dir / "3d_row_indices_col_indices_depth_size.svg"
         diagram.render_svg(str(output_path), height=128)
@@ -1007,8 +1007,8 @@ class TestVisualRegression:
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
         diagram = (
             td.to_diagram(tensor)
-            .annotate_dim_size("row", color="red")
-            .annotate_dim_indices("col", color="blue")
+            .annotate_dim_size(0, color="red")
+            .annotate_dim_indices(1, color="blue")
             .fill_region(start_coord=(0, 0), end_coord=(2, 2), color="green", opacity=None)
         )
         output_path = temp_output_dir / "2d_mixed_annotate_fill_region.svg"
@@ -1434,7 +1434,7 @@ class TestVisualRegression:
     ):
         """Test 1D tensor with indices annotated (custom font size) matches reference."""
         tensor = np.arange(8, dtype=np.float32)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.5)
+        diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=0.5)
         output_path = temp_output_dir / "1d_annotate_indices_custom_font_size.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -1450,7 +1450,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with indices annotated (custom font size) matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.6)
+        diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=0.6)
         output_path = temp_output_dir / "2d_annotate_indices_custom_font_size.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -1466,7 +1466,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with indices annotated (large font size) matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=1.2)
+        diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=1.2)
         output_path = temp_output_dir / "2d_annotate_indices_large_font_size.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -1482,7 +1482,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with indices annotated (small font size) matches reference."""
         tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
-        diagram = td.to_diagram(tensor).annotate_dim_indices("all", font_size=0.3)
+        diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=0.3)
         output_path = temp_output_dir / "2d_annotate_indices_small_font_size.svg"
         diagram.render_svg(str(output_path), height=128)
 
