@@ -1,11 +1,11 @@
 from colour import Color
 import sys
-from typing import Callable, Optional
+from typing import Optional
 
 import chalk
 import numpy as np
 
-from tensordiagram.types import Scalar, TensorLike
+from tensordiagram.types import FormatFunction, IndexType, Scalar, TensorLike
 
 
 def convert_tensor(tensor: TensorLike) -> np.ndarray:
@@ -45,13 +45,16 @@ def draw_cell(
     opacity: float,
     value: Optional[Scalar] = None,
     font_size: Optional[float] = None,
-    format_fn: Optional[Callable[[Scalar], str]] = None,
+    format_fn: Optional[FormatFunction] = None,
+    index: Optional[IndexType] = None,
 ) -> chalk.Diagram:
     c = chalk.rectangle(cell_size, cell_size).fill_color(color).fill_opacity(opacity)
 
     if value is not None:
         if format_fn is not None:
-            value_str = format_fn(value)
+            if index is None:
+                index = 0  # default index if not provided
+            value_str = format_fn(index, value)
         else:
             value_str = f"{value:.2f}" if isinstance(value, float) else str(value)
 
@@ -77,7 +80,8 @@ def draw_cube(
     # [TODO] Add value support later
     value: Optional[Scalar] = None,
     font_size: Optional[float] = None,
-    format_fn: Optional[Callable[[Scalar], str]] = None,
+    format_fn: Optional[FormatFunction] = None,
+    index: Optional[IndexType] = None,
 ) -> chalk.Diagram:
     face_f = chalk.rectangle(cell_size, cell_size)
     face_t = chalk.rectangle(cell_size, cell_size * 0.5).shear_x(-1)

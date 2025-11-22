@@ -22,9 +22,10 @@ if TYPE_CHECKING:
 FontSize = Union[int, float]
 Scalar = Union[int, float, str, bool]
 TensorLike = Any
-ColorFunction = Callable[[Union[int, tuple[int, ...]], Scalar], str]
-OpacityFunction = Callable[[Union[int, tuple[int, ...]], Scalar], float]
-
+IndexType = Union[int, tuple[int, ...]]
+ColorFunction = Callable[[IndexType, Scalar], str]
+OpacityFunction = Callable[[IndexType, Scalar], float]
+FormatFunction = Callable[[IndexType, Scalar], str]
 
 _m = lambda a, b: a if a is not None else b
 
@@ -88,7 +89,7 @@ class TensorStyle(Transferable):
     opacity_map: Optional[TensorLike] = None
     show_values: Optional[bool] = None
     value_font_size: Optional[FontSize] = None
-    value_format_fn: Optional[Callable[[Scalar], str]] = None
+    value_format_fn: Optional[FormatFunction] = None
 
 
 @dataclass
@@ -246,7 +247,7 @@ class TensorStylable(Protocol):
     def fill_values(
         self,
         font_size: Optional[FontSize] = None,
-        format_fn: Optional[Callable[[Scalar], str]] = None,
+        format_fn: Optional[FormatFunction] = None,
     ) -> Self:
         """Fills the tensor cells with their values as text.
 
@@ -256,7 +257,7 @@ class TensorStylable(Protocol):
                 length of the values. Auto-sizing ensures that longer numbers
                 fit within cells by reducing the font size proportionally.
             format_fn: A custom function to format cell values as strings.
-                Takes a scalar value and returns a formatted string. If None,
+                Takes (index, value) and returns a formatted string. If None,
                 floats are formatted to 2 decimal places (e.g., "1.23") and
                 other types use their default string representation.
 
@@ -274,11 +275,11 @@ class TensorStylable(Protocol):
 
             Custom formatting function for percentages:
             >>> tensor = td.to_diagram(np.array([[0.123, 0.456], [0.789, 0.234]]))
-            >>> tensor.fill_values(format_fn=lambda x: f"{x*100:.1f}%")
+            >>> tensor.fill_values(format_fn=lambda idx, val: f"{val*100:.1f}%")
 
             Custom size and formatting:
             >>> tensor = td.to_diagram(np.array([[1.234, 5.678], [9.012, 3.456]]))
-            >>> tensor.fill_values(font_size=0.5, format_fn=lambda x: f"{x:.1f}")
+            >>> tensor.fill_values(font_size=0.5, format_fn=lambda idx, val: f"{val:.1f}")
 
         Note:
             - This method is not supported for 3D tensors (rank 3).

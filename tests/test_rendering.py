@@ -1337,7 +1337,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with fill_values and percentage formatting matches reference."""
         tensor = np.array([[0.123, 0.456], [0.789, 0.234]], dtype=np.float32)
-        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x*100:.1f}%")
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val*100:.1f}%")
         output_path = temp_output_dir / "2d_fill_values_percentage.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -1353,7 +1353,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with fill_values and scientific notation matches reference."""
         tensor = np.array([[1000, 2000], [3000, 4000]], dtype=np.float32)
-        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.1e}")
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val:.1e}")
         output_path = temp_output_dir / "2d_fill_values_scientific.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -1369,7 +1369,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with fill_values and integer formatting matches reference."""
         tensor = np.array([[1.5, 2.7], [3.2, 4.9]], dtype=np.float32)
-        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: str(int(x)))
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: str(int(val)))
         output_path = temp_output_dir / "2d_fill_values_integer.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -1385,7 +1385,7 @@ class TestVisualRegression:
     ):
         """Test 2D tensor with fill_values using both custom font size and format matches reference."""
         tensor = np.array([[1.234, 5.678], [9.012, 3.456]], dtype=np.float32)
-        diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format_fn=lambda x: f"{x:.1f}")
+        diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format_fn=lambda idx, val: f"{val:.1f}")
         output_path = temp_output_dir / "2d_fill_values_size_and_format.svg"
         diagram.render_svg(str(output_path), height=128)
 
@@ -1417,7 +1417,7 @@ class TestVisualRegression:
     ):
         """Test 1D tensor with fill_values and custom formatting matches reference."""
         tensor = np.array([1.1, 2.2, 3.3, 4.4, 5.5], dtype=np.float32)
-        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.0f}")
+        diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val:.0f}")
         output_path = temp_output_dir / "1d_fill_values_custom_format.svg"
         diagram.render_svg(str(output_path), height=128)
 

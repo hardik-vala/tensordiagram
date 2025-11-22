@@ -764,7 +764,7 @@ def generate_2d_fill_values_percentage(fixtures_dir):
     """Generate reference_2d_fill_values_percentage.svg"""
     print("Generating reference_2d_fill_values_percentage.svg...")
     tensor = np.array([[0.123, 0.456], [0.789, 0.234]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x*100:.1f}%")
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val*100:.1f}%")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_percentage.svg"), height=128
     )
@@ -774,7 +774,7 @@ def generate_2d_fill_values_scientific(fixtures_dir):
     """Generate reference_2d_fill_values_scientific.svg"""
     print("Generating reference_2d_fill_values_scientific.svg...")
     tensor = np.array([[1000, 2000], [3000, 4000]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.1e}")
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val:.1e}")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_scientific.svg"), height=128
     )
@@ -784,7 +784,7 @@ def generate_2d_fill_values_integer(fixtures_dir):
     """Generate reference_2d_fill_values_integer.svg"""
     print("Generating reference_2d_fill_values_integer.svg...")
     tensor = np.array([[1.5, 2.7], [3.2, 4.9]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: str(int(x)))
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: str(int(val)))
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_integer.svg"), height=128
     )
@@ -794,7 +794,7 @@ def generate_2d_fill_values_size_and_format(fixtures_dir):
     """Generate reference_2d_fill_values_size_and_format.svg"""
     print("Generating reference_2d_fill_values_size_and_format.svg...")
     tensor = np.array([[1.234, 5.678], [9.012, 3.456]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format_fn=lambda x: f"{x:.1f}")
+    diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format_fn=lambda idx, val: f"{val:.1f}")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_size_and_format.svg"), height=128
     )
@@ -814,7 +814,7 @@ def generate_1d_fill_values_custom_format(fixtures_dir):
     """Generate reference_1d_fill_values_custom_format.svg"""
     print("Generating reference_1d_fill_values_custom_format.svg...")
     tensor = np.array([1.1, 2.2, 3.3, 4.4, 5.5], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda x: f"{x:.0f}")
+    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val:.0f}")
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_fill_values_custom_format.svg"), height=128
     )

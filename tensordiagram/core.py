@@ -3,7 +3,7 @@ from __future__ import annotations
 from colour import Color
 from dataclasses import dataclass
 import functools
-from typing import Any, Callable, List, Literal, Optional, Tuple, Union
+from typing import Any, List, Literal, Optional, Tuple, Union
 import sys
 
 import chalk
@@ -12,6 +12,7 @@ import numpy as np
 from tensordiagram.types import (
     ColorFunction,
     FontSize,
+    FormatFunction,
     OpacityFunction,
     Scalar,
     TensorAnnotation,
@@ -40,12 +41,27 @@ _default_map = lambda shape, value: np.full(
 def _get_font_size(
     cell_size: float,
     tensor: WrappedTensor,
-    format_fn: Optional[Callable[[Scalar], str]],
+    format_fn: Optional[FormatFunction],
 ) -> float:
-    values = tensor.flatten()
     if format_fn is None:
-        format_fn = lambda x: f"{x:.2f}" if isinstance(x, float) else str(x)
-    value_strs = [format_fn(v) for v in values]
+        format_fn = lambda idx, val: f"{val:.2f}" if isinstance(val, float) else str(val)
+
+    value_strs = []
+    shape = tensor.shape
+
+    if len(shape) == 1:
+        for i in range(shape[0]):
+            value_strs.append(format_fn(i, tensor[i]))
+    elif len(shape) == 2:
+        for i in range(shape[0]):
+            for j in range(shape[1]):
+                value_strs.append(format_fn((i, j), tensor[i, j]))
+    elif len(shape) == 3:
+        for i in range(shape[0]):
+            for j in range(shape[1]):
+                for k in range(shape[2]):
+                    value_strs.append(format_fn((i, j, k), tensor[i, j, k]))
+
     max_len = max(len(s) for s in value_strs)
     font_size_multiplier = 1.5 / max_len if max_len > 2 else 0.6
     return cell_size * font_size_multiplier
@@ -58,7 +74,7 @@ def _build_diagram_1d(
     opacity_map: TensorLike,
     show_values: bool,
     font_size: Optional[float],
-    format_fn: Optional[Callable[[Scalar], str]],
+    format_fn: Optional[FormatFunction],
 ) -> chalk.Diagram:
     rows = tensor.shape[0]
     return chalk.vcat(
@@ -69,6 +85,7 @@ def _build_diagram_1d(
             value=tensor[c] if show_values else None,
             font_size=font_size,
             format_fn=format_fn,
+            index=c,
         )
         for c in range(rows)
     )
@@ -81,7 +98,7 @@ def _build_diagram_2d(
     opacity_map: TensorLike,
     show_values: bool,
     font_size: Optional[float],
-    format_fn: Optional[Callable[[Scalar], str]],
+    format_fn: Optional[FormatFunction],
 ) -> chalk.Diagram:
     rows, cols = tensor.shape
     return chalk.vcat(
@@ -93,6 +110,7 @@ def _build_diagram_2d(
                 value=tensor[r, c] if show_values else None,
                 font_size=font_size,
                 format_fn=format_fn,
+                index=(r, c),
             )
             for c in range(cols)
         )
@@ -107,7 +125,7 @@ def _build_diagram_3d(
     opacity_map: TensorLike,
     show_values: bool,
     font_size: Optional[float],
-    format_fn: Optional[Callable[[Scalar], str]],
+    format_fn: Optional[FormatFunction],
 ) -> chalk.Diagram:
     rows, cols, depth = tensor.shape
     hyp = (chalk.unit_y * 0.5 * cell_size).shear_x(-1)  # type: ignore
@@ -124,6 +142,7 @@ def _build_diagram_3d(
                         value=tensor[r, c, d] if show_values else None,
                         font_size=font_size,
                         format_fn=format_fn,
+                        index=(r, c, d),
                     )
                     for c in range(cols)
                 )
@@ -888,7 +907,7 @@ class TensorDiagramImpl(TensorDiagram):
     def fill_values(
         self,
         font_size: Optional[FontSize] = None,
-        format_fn: Optional[Callable[[Scalar], str]] = None,
+        format_fn: Optional[FormatFunction] = None,
     ) -> TensorDiagram:
         if self.rank == 3:
             raise ValueError("Showing values for 3D tensors is not supported")
