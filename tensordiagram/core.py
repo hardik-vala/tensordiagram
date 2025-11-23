@@ -75,6 +75,7 @@ def _build_diagram_1d(
     show_values: bool,
     font_size: Optional[float],
     format_fn: Optional[FormatFunction],
+    text_color: Optional[str],
 ) -> chalk.Diagram:
     rows = tensor.shape[0]
     return chalk.vcat(
@@ -86,6 +87,7 @@ def _build_diagram_1d(
             font_size=font_size,
             format_fn=format_fn,
             index=c,
+            text_color=text_color,
         )
         for c in range(rows)
     )
@@ -99,6 +101,7 @@ def _build_diagram_2d(
     show_values: bool,
     font_size: Optional[float],
     format_fn: Optional[FormatFunction],
+    text_color: Optional[str],
 ) -> chalk.Diagram:
     rows, cols = tensor.shape
     return chalk.vcat(
@@ -111,6 +114,7 @@ def _build_diagram_2d(
                 font_size=font_size,
                 format_fn=format_fn,
                 index=(r, c),
+                text_color=text_color,
             )
             for c in range(cols)
         )
@@ -126,6 +130,7 @@ def _build_diagram_3d(
     show_values: bool,
     font_size: Optional[float],
     format_fn: Optional[FormatFunction],
+    text_color: Optional[str],
 ) -> chalk.Diagram:
     rows, cols, depth = tensor.shape
     hyp = (chalk.unit_y * 0.5 * cell_size).shear_x(-1)  # type: ignore
@@ -143,6 +148,7 @@ def _build_diagram_3d(
                         font_size=font_size,
                         format_fn=format_fn,
                         index=(r, c, d),
+                        text_color=text_color,
                     )
                     for c in range(cols)
                 )
@@ -364,6 +370,7 @@ class TensorDiagramImpl(TensorDiagram):
         tensor = self._wrapped_tensor
 
         format_fn = self._style.value_format_fn
+        text_color = self._style.value_color
         in_font_size = self._style.value_font_size
         if show_values:
             if in_font_size is not None:
@@ -387,7 +394,7 @@ class TensorDiagramImpl(TensorDiagram):
             # 3D tensor
             build_diagram_f = _build_diagram_3d
         out_diagram = build_diagram_f(
-            tensor, cell_size, color_map, opacity_map, show_values, font_size, format_fn
+            tensor, cell_size, color_map, opacity_map, show_values, font_size, format_fn, text_color
         )
 
         offset_l = 0.0
@@ -908,6 +915,7 @@ class TensorDiagramImpl(TensorDiagram):
         self,
         font_size: Optional[FontSize] = None,
         format_fn: Optional[FormatFunction] = None,
+        color: Optional[str] = None,
     ) -> TensorDiagram:
         if self.rank == 3:
             raise ValueError("Showing values for 3D tensors is not supported")
@@ -916,6 +924,7 @@ class TensorDiagramImpl(TensorDiagram):
                 show_values=True,
                 value_font_size=font_size,
                 value_format_fn=format_fn,
+                value_color=color,
             )
         )
         return TensorDiagramImpl(

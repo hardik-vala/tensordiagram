@@ -47,6 +47,7 @@ def draw_cell(
     font_size: Optional[float] = None,
     format_fn: Optional[FormatFunction] = None,
     index: Optional[IndexType] = None,
+    text_color: Optional[str] = None,
 ) -> chalk.Diagram:
     c = chalk.rectangle(cell_size, cell_size).fill_color(color).fill_opacity(opacity)
 
@@ -65,8 +66,10 @@ def draw_cell(
         else:
             font_size = font_size
 
+        # Use provided text_color or default to black
+        txt_color = Color(text_color) if text_color is not None else Color("black")
         txt = (
-            chalk.text(value_str, font_size).fill_color(Color("black")).line_width(0.0)
+            chalk.text(value_str, font_size).fill_color(txt_color).line_width(0.0)
         )
         c = c + txt
 
@@ -77,11 +80,11 @@ def draw_cube(
     cell_size: float,
     color: Color,
     opacity: float,
-    # [TODO] Add value support later
     value: Optional[Scalar] = None,
     font_size: Optional[float] = None,
     format_fn: Optional[FormatFunction] = None,
     index: Optional[IndexType] = None,
+    text_color: Optional[str] = None,
 ) -> chalk.Diagram:
     face_f = chalk.rectangle(cell_size, cell_size)
     face_t = chalk.rectangle(cell_size, cell_size * 0.5).shear_x(-1)

@@ -82,6 +82,7 @@ class TensorStyle(Transferable):
         show_values: Whether to show the values in the cells.
         value_font_size: The font size for the cell values. Only used if show_values is True.
         value_format_fn: A function to format the cell values as strings. Only used if show_values is True.
+        value_color: The color of the text for the cell values. Only used if show_values is True.
     """
 
     cell_size: Optional[float] = None
@@ -90,6 +91,7 @@ class TensorStyle(Transferable):
     show_values: Optional[bool] = None
     value_font_size: Optional[FontSize] = None
     value_format_fn: Optional[FormatFunction] = None
+    value_color: Optional[str] = None
 
 
 @dataclass
@@ -248,6 +250,7 @@ class TensorStylable(Protocol):
         self,
         font_size: Optional[FontSize] = None,
         format_fn: Optional[FormatFunction] = None,
+        color: Optional[str] = None,
     ) -> Self:
         """Fills the tensor cells with their values as text.
 
@@ -260,6 +263,8 @@ class TensorStylable(Protocol):
                 Takes (index, value) and returns a formatted string. If None,
                 floats are formatted to 2 decimal places (e.g., "1.23") and
                 other types use their default string representation.
+            color: The color of the text for the cell values. If None, the
+                default color is black.
 
         Returns:
             A new TensorDiagram with values displayed in the cells.
@@ -281,10 +286,14 @@ class TensorStylable(Protocol):
             >>> tensor = td.to_diagram(np.array([[1.234, 5.678], [9.012, 3.456]]))
             >>> tensor.fill_values(font_size=0.5, format_fn=lambda idx, val: f"{val:.1f}")
 
+            Custom color:
+            >>> tensor = td.to_diagram(np.array([[1, 2], [3, 4]]))
+            >>> tensor.fill_values(color="red")
+
         Note:
             - This method is not supported for 3D tensors (rank 3).
             - Default formatting: floats are shown as "x.xx" (2 decimal places).
-            - The text color is always black for maximum contrast with cell backgrounds.
+            - Default text color is black for maximum contrast with cell backgrounds.
             - Custom format functions can return any string, allowing for units,
               symbols, or custom number representations.
         """
