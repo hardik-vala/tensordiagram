@@ -45,17 +45,17 @@ def draw_cell(
     opacity: float,
     value: Optional[Scalar] = None,
     font_size: Optional[float] = None,
-    format_fn: Optional[FormatFunction] = None,
+    format: Optional[FormatFunction] = None,
     index: Optional[IndexType] = None,
     text_color: Optional[str] = None,
 ) -> chalk.Diagram:
     c = chalk.rectangle(cell_size, cell_size).fill_color(color).fill_opacity(opacity)
 
     if value is not None:
-        if format_fn is not None:
+        if format is not None:
             if index is None:
                 index = 0  # default index if not provided
-            value_str = format_fn(index, value)
+            value_str = format(index, value)
         else:
             value_str = f"{value:.2f}" if isinstance(value, float) else str(value)
 
@@ -82,7 +82,7 @@ def draw_cube(
     opacity: float,
     value: Optional[Scalar] = None,
     font_size: Optional[float] = None,
-    format_fn: Optional[FormatFunction] = None,
+    format: Optional[FormatFunction] = None,
     index: Optional[IndexType] = None,
     text_color: Optional[str] = None,
 ) -> chalk.Diagram:

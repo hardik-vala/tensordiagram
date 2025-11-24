@@ -81,7 +81,7 @@ class TensorStyle(Transferable):
         opacity_map: A tensor-like object that maps opacities to the cells.
         show_values: Whether to show the values in the cells.
         value_font_size: The font size for the cell values. Only used if show_values is True.
-        value_format_fn: A function to format the cell values as strings. Only used if show_values is True.
+        value_format: A function to format the cell values as strings. Only used if show_values is True.
         value_color: The color of the text for the cell values. Can be a string color or a
             function that takes (index, value) and returns a color string. Only used if show_values is True.
     """
@@ -91,7 +91,7 @@ class TensorStyle(Transferable):
     opacity_map: Optional[TensorLike] = None
     show_values: Optional[bool] = None
     value_font_size: Optional[FontSize] = None
-    value_format_fn: Optional[FormatFunction] = None
+    value_format: Optional[FormatFunction] = None
     value_color: Optional[Union[str, ColorFunction]] = None
 
 
@@ -250,7 +250,7 @@ class TensorStylable(Protocol):
     def fill_values(
         self,
         font_size: Optional[FontSize] = None,
-        format_fn: Optional[FormatFunction] = None,
+        format: Optional[FormatFunction] = None,
         color: Optional[Union[str, ColorFunction]] = None,
     ) -> Self:
         """Fills the tensor cells with their values as text.
@@ -260,7 +260,7 @@ class TensorStylable(Protocol):
                 is automatically calculated based on the cell size and the
                 length of the values. Auto-sizing ensures that longer numbers
                 fit within cells by reducing the font size proportionally.
-            format_fn: A custom function to format cell values as strings.
+            format: A custom function to format cell values as strings.
                 Takes (index, value) and returns a formatted string. If None,
                 floats are formatted to 2 decimal places (e.g., "1.23") and
                 other types use their default string representation.
@@ -282,11 +282,11 @@ class TensorStylable(Protocol):
 
             Custom formatting function for percentages:
             >>> tensor = td.to_diagram(np.array([[0.123, 0.456], [0.789, 0.234]]))
-            >>> tensor.fill_values(format_fn=lambda idx, val: f"{val*100:.1f}%")
+            >>> tensor.fill_values(format=lambda idx, val: f"{val*100:.1f}%")
 
             Custom size and formatting:
             >>> tensor = td.to_diagram(np.array([[1.234, 5.678], [9.012, 3.456]]))
-            >>> tensor.fill_values(font_size=0.5, format_fn=lambda idx, val: f"{val:.1f}")
+            >>> tensor.fill_values(font_size=0.5, format=lambda idx, val: f"{val:.1f}")
 
             Custom static color:
             >>> tensor = td.to_diagram(np.array([[1, 2], [3, 4]]))
