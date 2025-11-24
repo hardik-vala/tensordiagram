@@ -1428,6 +1428,80 @@ class TestVisualRegression:
         else:
             pytest.skip(f"Reference image not found: {reference_path}")
 
+    # fill_values with color function tests
+    def test_reference_2d_fill_values_color_function_value_based(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values color function (value-based) matches reference."""
+        tensor = np.array([[1, -2, 3], [4, -5, 6]], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(
+            color=lambda idx, val: "red" if val > 0 else "blue"
+        )
+        output_path = temp_output_dir / "2d_fill_values_color_function_value.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_color_function_value.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_fill_values_color_function_index_based(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values color function (index-based) matches reference."""
+        tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+        diagram = td.to_diagram(tensor).fill_values(
+            color=lambda idx, val: "green" if idx[0] % 2 == 0 else "purple"
+        )
+        output_path = temp_output_dir / "2d_fill_values_color_function_index.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_color_function_index.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_1d_fill_values_color_function(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 1D tensor with fill_values color function matches reference."""
+        tensor = np.array([1, 2, 3, 4, 5], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(
+            color=lambda idx, val: "red" if idx % 2 == 0 else "blue"
+        )
+        output_path = temp_output_dir / "1d_fill_values_color_function.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_1d_fill_values_color_function.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
+    def test_reference_2d_fill_values_color_and_format_functions(
+        self, fixtures_dir, temp_output_dir, svg_comparator
+    ):
+        """Test 2D tensor with fill_values using both color and format functions matches reference."""
+        tensor = np.array([[1.5, -2.3, 3.7], [4.1, -5.9, 6.2]], dtype=np.float32)
+        diagram = td.to_diagram(tensor).fill_values(
+            color=lambda idx, val: "orange" if val > 0 else "cyan",
+            format_fn=lambda idx, val: f"{abs(val):.1f}"
+        )
+        output_path = temp_output_dir / "2d_fill_values_color_and_format.svg"
+        diagram.render_svg(str(output_path), height=128)
+
+        reference_path = fixtures_dir / "reference_2d_fill_values_color_and_format.svg"
+        if reference_path.exists():
+            assert svg_comparator(output_path, reference_path), \
+                "Rendered output does not match reference image"
+        else:
+            pytest.skip(f"Reference image not found: {reference_path}")
+
     # annotate_dim_indices with custom font size tests
     def test_reference_1d_annotate_indices_custom_font_size(
         self, fixtures_dir, temp_output_dir, svg_comparator
