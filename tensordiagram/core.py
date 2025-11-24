@@ -633,7 +633,10 @@ class TensorDiagramImpl(TensorDiagram):
         envelope = self._diagram.get_envelope()
         assert envelope is not None
 
-        pad = 0.05
+        if self.rank < 3:
+            pad = 0.05
+        else:
+            pad = 0.1
 
         # infer width to preserve aspect ratio
         width = width or int(height * envelope.width / envelope.height)
