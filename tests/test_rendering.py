@@ -1807,18 +1807,6 @@ class TestImageObjects:
         assert isinstance(img, Image.Image)
         assert img.size[1] == 200
 
-    def test_to_image_png_no_pycairo(self, shape_2d):
-        """Test that to_image_png raises ImportError when pycairo is not available."""
-        # This test is tricky to write without uninstalling pycairo
-        # We'll skip it for now as it would break the test environment
-        pass
-
-    def test_to_image_png_no_pillow(self, shape_2d):
-        """Test that to_image_png raises ImportError when Pillow is not available."""
-        # This test is tricky to write without uninstalling Pillow
-        # We'll skip it for now as it would break the test environment
-        pass
-
     def test_image_consistency_png_vs_file(self, numpy_array_2d_square, temp_output_dir):
         """Test that to_image_png produces similar output to render_png."""
         pytest.importorskip("cairo", reason="pycairo not installed")
