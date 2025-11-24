@@ -18,19 +18,20 @@ Other python libraries for creating tensor diagrams are either too physics and m
 pip install tensordiagram
 ```
 
-Separately, you'll need to install cairo for png images:
+Separately, you'll need to install cairo for PNG rendering and Image objects:
 
 ```bash
 # might need to install the base library first on debian
 sudo apt-get install libcairo2-dev
 
-# cairo python bindings
+# cairo python bindings + Pillow for Image objects
 pip install ".[cairo]"
 ```
 
-Or, for svg images:
+Or, for SVG rendering and Image objects:
 
 ```bash
+# includes cairosvg + Pillow for Image objects
 pip install ".[svg]"
 ```
 
