@@ -138,13 +138,14 @@ class Renderable(Protocol):
         ...
 
     def to_image_png(
-        self, height: Optional[int] = None, width: Optional[int] = None
+        self, height: Optional[int] = None, width: Optional[int] = None, padding: Optional[float] = None
     ) -> PILImage:
         """Renders the object to a PIL Image object in PNG format.
 
         Args:
             height: The height of the image.
             width: The width of the image.
+            padding: The padding factor around the diagram. If None, defaults to 0.4.
 
         Returns:
             PIL.Image.Image: The rendered image.
@@ -166,13 +167,14 @@ class Renderable(Protocol):
         ...
 
     def to_image(
-        self, height: Optional[int] = None, width: Optional[int] = None
+        self, height: Optional[int] = None, width: Optional[int] = None, padding: Optional[float] = None
     ) -> PILImage:
         """Renders the object to a PIL Image object.
 
         Args:
             height: The height of the image.
             width: The width of the image.
+            padding: The padding factor around the diagram. If None, defaults to 0.4.
 
         Returns:
             PIL.Image.Image: The rendered image.

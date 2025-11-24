@@ -595,7 +595,7 @@ class TensorDiagramImpl(TensorDiagram):
         return self._diagram.render_pdf(path, height=height)
 
     def to_image_png(
-        self, height: Optional[int] = None, width: Optional[int] = None
+        self, height: Optional[int] = None, width: Optional[int] = None, padding: Optional[float] = None
     ) -> PILImage:
         """
         Render the diagram to a PIL Image object in PNG format.
@@ -604,6 +604,8 @@ class TensorDiagramImpl(TensorDiagram):
             height: Height of the rendered image in pixels. Defaults to DEFAULT_HEIGHT.
             width: Width of the rendered image in pixels. If not specified,
                    width is calculated to preserve aspect ratio.
+            padding: The padding factor around the diagram. If None, defaults to 0.05
+                    for 1D/2D tensors and 0.3 for 3D tensors.
 
         Returns:
             PIL.Image.Image: The rendered diagram as a PIL Image object.
@@ -633,10 +635,10 @@ class TensorDiagramImpl(TensorDiagram):
         envelope = self._diagram.get_envelope()
         assert envelope is not None
 
-        if self.rank < 3:
-            pad = 0.05
+        if padding is not None:
+            pad = padding
         else:
-            pad = 0.3
+            pad = 0.4
 
         # infer width to preserve aspect ratio
         width = width or int(height * envelope.width / envelope.height)
@@ -726,7 +728,7 @@ class TensorDiagramImpl(TensorDiagram):
                 os.unlink(svg_path)
 
     def to_image(
-        self, height: Optional[int] = None, width: Optional[int] = None
+        self, height: Optional[int] = None, width: Optional[int] = None, padding: Optional[float] = None
     ) -> PILImage:
         """
         Render the diagram to a PIL Image object.
@@ -737,6 +739,8 @@ class TensorDiagramImpl(TensorDiagram):
             height: Height of the rendered image in pixels. Defaults to DEFAULT_HEIGHT.
             width: Width of the rendered image in pixels. If not specified,
                    width is calculated to preserve aspect ratio.
+            padding: The padding factor around the diagram. If None, defaults to 0.05
+                    for 1D/2D tensors and 0.3 for 3D tensors.
 
         Returns:
             PIL.Image.Image: The rendered diagram as a PIL Image object.
@@ -744,7 +748,7 @@ class TensorDiagramImpl(TensorDiagram):
         Raises:
             ImportError: If required dependencies are not installed.
         """
-        return self.to_image_png(height=height, width=width)
+        return self.to_image_png(height=height, width=width, padding=padding)
 
     def _repr_svg_(self) -> str:
         return self._diagram._repr_svg_()
