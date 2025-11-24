@@ -636,7 +636,7 @@ class TensorDiagramImpl(TensorDiagram):
         if self.rank < 3:
             pad = 0.05
         else:
-            pad = 0.2
+            pad = 0.3
 
         # infer width to preserve aspect ratio
         width = width or int(height * envelope.width / envelope.height)
