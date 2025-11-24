@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tensordiagram"
-version = "0.2.0"
+version = "0.2.1"
 description = "Visualize torch, jax, tensorflow, etc. tensors for understanding and debugging."
 readme = "README.md"
 requires-python = ">=3.9"
