@@ -1627,3 +1627,238 @@ class TestRenderingEdgeCases:
         output_path = nested_dir / "nested_output.svg"
         diagram.render_svg(str(output_path))
         assert output_path.exists()
+
+
+@pytest.mark.rendering
+class TestImageObjects:
+    """Tests for rendering to PIL Image objects."""
+
+    def test_to_image_png_basic(self, shape_2d):
+        """Test basic to_image_png rendering."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_2d)
+        img = diagram.to_image_png()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+        assert img.mode in ["RGB", "RGBA"]
+
+    def test_to_image_png_with_height(self, shape_2d):
+        """Test to_image_png with custom height."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_2d)
+        img = diagram.to_image_png(height=256)
+
+        assert isinstance(img, Image.Image)
+        assert img.size[1] == 256
+
+    def test_to_image_png_with_width(self, shape_2d):
+        """Test to_image_png with custom width."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_2d)
+        img = diagram.to_image_png(height=200, width=300)
+
+        assert isinstance(img, Image.Image)
+        assert img.size == (300, 200)
+
+    def test_to_image_png_with_values(self, numpy_array_2d_square):
+        """Test to_image_png with values displayed."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(numpy_array_2d_square).fill_values()
+        img = diagram.to_image_png()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_png_1d(self, shape_1d):
+        """Test to_image_png for 1D tensor."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_1d)
+        img = diagram.to_image_png()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_png_3d(self):
+        """Test to_image_png for 3D tensor."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        tensor = np.random.randn(2, 3, 4)
+        diagram = td.to_diagram(tensor)
+        img = diagram.to_image_png()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_png_styled(self, numpy_array_2d_square):
+        """Test to_image_png with styled diagram."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = (
+            td.to_diagram(numpy_array_2d_square)
+            .fill_color("blue")
+            .fill_opacity(0.7)
+            .fill_values()
+        )
+        img = diagram.to_image_png()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_svg_basic(self, shape_2d):
+        """Test basic to_image_svg rendering."""
+        pytest.importorskip("cairosvg", reason="cairosvg not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_2d)
+        img = diagram.to_image_svg()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+        assert img.mode in ["RGB", "RGBA"]
+
+    def test_to_image_svg_with_height(self, shape_2d):
+        """Test to_image_svg with custom height."""
+        pytest.importorskip("cairosvg", reason="cairosvg not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_2d)
+        img = diagram.to_image_svg(height=256)
+
+        assert isinstance(img, Image.Image)
+        # Note: SVG conversion may not preserve exact dimensions
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_svg_styled(self, numpy_array_2d_square):
+        """Test to_image_svg with styled diagram."""
+        pytest.importorskip("cairosvg", reason="cairosvg not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(numpy_array_2d_square).fill_values()
+        img = diagram.to_image_svg()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_uses_png_by_default(self, shape_2d):
+        """Test that to_image uses PNG rendering by default."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_2d)
+        img = diagram.to_image()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_with_height(self, shape_2d):
+        """Test to_image with custom height."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(shape_2d)
+        img = diagram.to_image(height=200)
+
+        assert isinstance(img, Image.Image)
+        assert img.size[1] == 200
+
+    def test_image_consistency_png_vs_file(self, numpy_array_2d_square, temp_output_dir):
+        """Test that to_image_png produces similar output to render_png."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(numpy_array_2d_square).fill_values()
+
+        # Render to file
+        output_path = temp_output_dir / "test_consistency.png"
+        diagram.render_png(str(output_path), height=128)
+
+        # Render to image object
+        img_object = diagram.to_image_png(height=128)
+
+        # Load file and compare basic properties
+        img_file = Image.open(output_path)
+
+        assert img_object.size == img_file.size
+        assert img_object.mode == img_file.mode
+
+    def test_to_image_png_with_annotations(self, numpy_array_2d_square):
+        """Test to_image_png with annotated diagram."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = (
+            td.to_diagram(numpy_array_2d_square)
+            .annotate_dim_size()
+            .annotate_dim_indices()
+        )
+        img = diagram.to_image_png()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0
+
+    def test_to_image_png_with_region_fill(self, numpy_array_2d_square):
+        """Test to_image_png with fill_region."""
+        pytest.importorskip("cairo", reason="pycairo not installed")
+        pytest.importorskip("PIL", reason="Pillow not installed")
+
+        from PIL import Image
+
+        diagram = td.to_diagram(numpy_array_2d_square).fill_region(
+            start_coord=(0, 0), end_coord=(1, 1), color="red", opacity=0.8
+        )
+        img = diagram.to_image_png()
+
+        assert isinstance(img, Image.Image)
+        assert img.size[0] > 0
+        assert img.size[1] > 0

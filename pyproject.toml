@@ -35,11 +35,11 @@ dependencies = [
 
 [project.optional-dependencies]
 # Rendering options
-cairo = ["pycairo"]  # for png rendering
-svg = ["cairosvg"]  # for svg to png conversion
+cairo = ["pycairo", "Pillow>=10.0.0"]  # for png rendering and Image objects
+svg = ["cairosvg", "Pillow>=10.0.0"]  # for svg to png conversion and Image objects
 tikz = ["pylatex", "latextools"]   # for LaTeX/TikZ output
 # Convenience groups
-all = ["pycairo", "cairosvg", "pylatex", "latextools"]
+all = ["pycairo", "cairosvg", "pylatex", "latextools", "Pillow>=10.0.0"]
 # Development
 dev = [
     "pycairo",

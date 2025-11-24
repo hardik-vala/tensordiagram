@@ -18,19 +18,20 @@ Other python libraries for creating tensor diagrams are either too physics and m
 pip install tensordiagram
 ```
 
-Separately, you'll need to install cairo for png images:
+Separately, you'll need to install cairo for PNG rendering and Image objects:
 
 ```bash
 # might need to install the base library first on debian
 sudo apt-get install libcairo2-dev
 
-# cairo python bindings
+# cairo python bindings + Pillow for Image objects
 pip install ".[cairo]"
 ```
 
-Or, for svg images:
+Or, for SVG rendering and Image objects:
 
 ```bash
+# includes cairosvg + Pillow for Image objects
 pip install ".[svg]"
 ```
 
@@ -52,6 +53,19 @@ The **diagram can be saved** using `render_png` or `render_svg`:
 
 ```python
 diagram.render_png("output.png", height=300)
+```
+
+Alternatively, **render to a PIL Image object** instead of saving to disk:
+
+```python
+# Render to a PIL Image object
+img = diagram.to_image_png(height=300)  # Returns PIL.Image.Image
+
+# Or use the generic to_image() method (uses PNG by default)
+img = diagram.to_image(height=300)
+
+# Can also render via SVG and convert to Image
+img = diagram.to_image_svg(height=300)
 ```
 
 **Style and annotate diagrams**:

@@ -18,6 +18,7 @@ import chalk
 
 if TYPE_CHECKING:
     from dataclasses import Field
+    from PIL.Image import Image as PILImage
 
 FontSize = Union[int, float]
 Scalar = Union[int, float, str, bool]
@@ -133,6 +134,50 @@ class Renderable(Protocol):
         Args:
             path: The path to save the PDF file to.
             height: The height of the PDF file.
+        """
+        ...
+
+    def to_image_png(
+        self, height: Optional[int] = None, width: Optional[int] = None, padding: Optional[float] = None
+    ) -> PILImage:
+        """Renders the object to a PIL Image object in PNG format.
+
+        Args:
+            height: The height of the image.
+            width: The width of the image.
+            padding: The padding factor around the diagram. If None, defaults to 0.4.
+
+        Returns:
+            PIL.Image.Image: The rendered image.
+        """
+        ...
+
+    def to_image_svg(
+        self, height: Optional[int] = None, width: Optional[int] = None
+    ) -> PILImage:
+        """Renders the object to a PIL Image object by converting from SVG format.
+
+        Args:
+            height: The height of the image.
+            width: The width of the image.
+
+        Returns:
+            PIL.Image.Image: The rendered image.
+        """
+        ...
+
+    def to_image(
+        self, height: Optional[int] = None, width: Optional[int] = None, padding: Optional[float] = None
+    ) -> PILImage:
+        """Renders the object to a PIL Image object.
+
+        Args:
+            height: The height of the image.
+            width: The width of the image.
+            padding: The padding factor around the diagram. If None, defaults to 0.4.
+
+        Returns:
+            PIL.Image.Image: The rendered image.
         """
         ...
 
