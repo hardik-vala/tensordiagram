@@ -75,7 +75,7 @@ def _build_diagram_1d(
     show_values: bool,
     font_size: Optional[float],
     format_fn: Optional[FormatFunction],
-    text_color: Optional[str],
+    text_color: Optional[Union[str, ColorFunction]],
 ) -> chalk.Diagram:
     rows = tensor.shape[0]
     return chalk.vcat(
@@ -87,7 +87,7 @@ def _build_diagram_1d(
             font_size=font_size,
             format_fn=format_fn,
             index=c,
-            text_color=text_color,
+            text_color=text_color(c, tensor[c]) if callable(text_color) else text_color,
         )
         for c in range(rows)
     )
@@ -101,7 +101,7 @@ def _build_diagram_2d(
     show_values: bool,
     font_size: Optional[float],
     format_fn: Optional[FormatFunction],
-    text_color: Optional[str],
+    text_color: Optional[Union[str, ColorFunction]],
 ) -> chalk.Diagram:
     rows, cols = tensor.shape
     return chalk.vcat(
@@ -114,7 +114,7 @@ def _build_diagram_2d(
                 font_size=font_size,
                 format_fn=format_fn,
                 index=(r, c),
-                text_color=text_color,
+                text_color=text_color((r, c), tensor[r, c]) if callable(text_color) else text_color,
             )
             for c in range(cols)
         )
@@ -130,7 +130,7 @@ def _build_diagram_3d(
     show_values: bool,
     font_size: Optional[float],
     format_fn: Optional[FormatFunction],
-    text_color: Optional[str],
+    text_color: Optional[Union[str, ColorFunction]],
 ) -> chalk.Diagram:
     rows, cols, depth = tensor.shape
     hyp = (chalk.unit_y * 0.5 * cell_size).shear_x(-1)  # type: ignore
@@ -148,7 +148,7 @@ def _build_diagram_3d(
                         font_size=font_size,
                         format_fn=format_fn,
                         index=(r, c, d),
-                        text_color=text_color,
+                        text_color=text_color((r, c, d), tensor[r, c, d]) if callable(text_color) else text_color,
                     )
                     for c in range(cols)
                 )
@@ -915,7 +915,7 @@ class TensorDiagramImpl(TensorDiagram):
         self,
         font_size: Optional[FontSize] = None,
         format_fn: Optional[FormatFunction] = None,
-        color: Optional[str] = None,
+        color: Optional[Union[str, ColorFunction]] = None,
     ) -> TensorDiagram:
         if self.rank == 3:
             raise ValueError("Showing values for 3D tensors is not supported")

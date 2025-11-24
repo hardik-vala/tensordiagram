@@ -433,6 +433,41 @@ class TestFillValues:
         assert styled._style.value_color == "red"
         assert styled._style.show_values is True
 
+    def test_fill_values_with_color_function_1d(self, numpy_array_1d):
+        """Test fill_values with a color function on 1D tensor."""
+        diagram = to_diagram(numpy_array_1d)
+        color_fn = lambda idx, val: "red" if val > 2 else "blue"
+        diagram_with_values = diagram.fill_values(color=color_fn)
+        # Color function should be stored in style
+        assert diagram_with_values._style.value_color == color_fn
+        assert diagram_with_values._style.show_values is True
+
+    def test_fill_values_with_color_function_2d(self, numpy_array_2d):
+        """Test fill_values with a color function on 2D tensor."""
+        diagram = to_diagram(numpy_array_2d)
+        color_fn = lambda idx, val: "green" if val > 5 else "yellow"
+        diagram_with_values = diagram.fill_values(color=color_fn)
+        # Color function should be stored in style
+        assert diagram_with_values._style.value_color == color_fn
+        assert diagram_with_values._style.show_values is True
+
+    def test_fill_values_color_function_based_on_index(self, numpy_array_2d):
+        """Test fill_values with color function based on index position."""
+        diagram = to_diagram(numpy_array_2d)
+        # Color based on row index
+        color_fn = lambda idx, val: "red" if idx[0] == 0 else "blue"
+        diagram_with_values = diagram.fill_values(color=color_fn)
+        assert diagram_with_values._style.value_color == color_fn
+
+    def test_fill_values_color_function_with_format_fn(self, numpy_array_2d):
+        """Test fill_values with both color function and format function."""
+        diagram = to_diagram(numpy_array_2d)
+        color_fn = lambda idx, val: "red" if val > 5 else "blue"
+        format_fn = lambda idx, val: f"{val:.1f}"
+        diagram_with_values = diagram.fill_values(color=color_fn, format_fn=format_fn)
+        assert diagram_with_values._style.value_color == color_fn
+        assert diagram_with_values._style.value_format_fn == format_fn
+
 
 class TestStyling:
     """Tests for TensorDiagram styling methods."""
