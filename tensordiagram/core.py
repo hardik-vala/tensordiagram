@@ -589,6 +589,159 @@ class TensorDiagramImpl(TensorDiagram):
         height = height if height is not None else DEFAULT_HEIGHT
         return self._diagram.render_pdf(path, height=height)
 
+    def to_image_png(
+        self, height: Optional[int] = None, width: Optional[int] = None
+    ):  # type: ignore[no-untyped-def]
+        """
+        Render the diagram to a PIL Image object in PNG format.
+
+        Args:
+            height: Height of the rendered image in pixels. Defaults to DEFAULT_HEIGHT.
+            width: Width of the rendered image in pixels. If not specified,
+                   width is calculated to preserve aspect ratio.
+
+        Returns:
+            PIL.Image.Image: The rendered diagram as a PIL Image object.
+
+        Raises:
+            ImportError: If pycairo or Pillow is not installed.
+        """
+        try:
+            import cairo  # type: ignore[import-error]
+        except ImportError:
+            raise ImportError(
+                "pycairo is required to render png diagrams. Please install pycairo with `pip install tensordiagram[cairo]`."
+            ) from None
+
+        try:
+            from PIL import Image  # type: ignore[import-error]
+        except ImportError:
+            raise ImportError(
+                "Pillow is required to create Image objects. Please install Pillow with `pip install Pillow`."
+            ) from None
+
+        import io
+        from chalk.backend.cairo import render_cairo_prims  # type: ignore[import-untyped]
+        from chalk.style import Style  # type: ignore[import-untyped]
+        from chalk.transform import unit_x, unit_y  # type: ignore[import-untyped]
+
+        height = height if height is not None else DEFAULT_HEIGHT
+
+        # Get envelope and calculate dimensions (same logic as chalk's render)
+        envelope = self._diagram.get_envelope()
+        assert envelope is not None
+
+        pad = 0.05
+
+        # Infer width to preserve aspect ratio
+        width = width or int(height * envelope.width / envelope.height)
+
+        # Determine scale to fit the largest axis in the target frame size
+        if envelope.width - width <= envelope.height - height:
+            α = height / ((1 + pad) * envelope.height)
+        else:
+            α = width / ((1 + pad) * envelope.width)
+
+        # Create cairo surface
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
+        ctx = cairo.Context(surface)
+
+        # Prepare diagram for rendering
+        s = self._diagram.scale(α).center_xy().pad(1 + pad)
+        e = s.get_envelope()
+        assert e is not None
+        s = s.translate(e(-unit_x), e(-unit_y))
+
+        # Render to surface
+        render_cairo_prims(s, ctx, Style.root(max(width, height)))
+
+        # Write to BytesIO buffer
+        buffer = io.BytesIO()
+        surface.write_to_png(buffer)
+        buffer.seek(0)
+
+        # Convert to PIL Image
+        return Image.open(buffer)
+
+    def to_image_svg(
+        self, height: Optional[int] = None, width: Optional[int] = None
+    ):  # type: ignore[no-untyped-def]
+        """
+        Render the diagram to a PIL Image object by converting from SVG format.
+
+        Args:
+            height: Height of the rendered image in pixels. Defaults to DEFAULT_HEIGHT.
+            width: Width of the rendered image in pixels. If not specified,
+                   width is calculated to preserve aspect ratio.
+
+        Returns:
+            PIL.Image.Image: The rendered diagram as a PIL Image object.
+
+        Raises:
+            ImportError: If cairosvg or Pillow is not installed.
+        """
+        try:
+            import cairosvg  # type: ignore[import-error]
+        except ImportError:
+            raise ImportError(
+                "cairosvg is required to render svg diagrams. Please install cairosvg with `pip install tensordiagram[svg]`."
+            ) from None
+
+        try:
+            from PIL import Image  # type: ignore[import-error]
+        except ImportError:
+            raise ImportError(
+                "Pillow is required to create Image objects. Please install Pillow with `pip install Pillow`."
+            ) from None
+
+        import io
+        import tempfile
+
+        height = height if height is not None else DEFAULT_HEIGHT
+
+        # Render to temporary SVG file
+        with tempfile.NamedTemporaryFile(
+            suffix=".svg", mode="w", delete=False
+        ) as svg_file:
+            svg_path = svg_file.name
+
+        try:
+            self._diagram.render_svg(svg_path, height=height, width=width)
+
+            # Convert SVG to PNG bytes using cairosvg
+            png_bytes = cairosvg.svg2png(url=svg_path)
+
+            # Convert to PIL Image
+            buffer = io.BytesIO(png_bytes)
+            return Image.open(buffer)
+        finally:
+            # Clean up temporary file
+            import os
+
+            if os.path.exists(svg_path):
+                os.unlink(svg_path)
+
+    def to_image(
+        self, height: Optional[int] = None, width: Optional[int] = None
+    ):  # type: ignore[no-untyped-def]
+        """
+        Render the diagram to a PIL Image object.
+
+        This is a convenience method that uses PNG rendering by default.
+
+        Args:
+            height: Height of the rendered image in pixels. Defaults to DEFAULT_HEIGHT.
+            width: Width of the rendered image in pixels. If not specified,
+                   width is calculated to preserve aspect ratio.
+
+        Returns:
+            PIL.Image.Image: The rendered diagram as a PIL Image object.
+
+        Raises:
+            ImportError: If required dependencies are not installed.
+        """
+        return self.to_image_png(height=height, width=width)
+
     def _repr_svg_(self) -> str:
         return self._diagram._repr_svg_()
 
