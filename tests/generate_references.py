@@ -764,7 +764,7 @@ def generate_2d_fill_values_percentage(fixtures_dir):
     """Generate reference_2d_fill_values_percentage.svg"""
     print("Generating reference_2d_fill_values_percentage.svg...")
     tensor = np.array([[0.123, 0.456], [0.789, 0.234]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val*100:.1f}%")
+    diagram = td.to_diagram(tensor).fill_values(format=lambda idx, val: f"{val*100:.1f}%")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_percentage.svg"), height=128
     )
@@ -774,7 +774,7 @@ def generate_2d_fill_values_scientific(fixtures_dir):
     """Generate reference_2d_fill_values_scientific.svg"""
     print("Generating reference_2d_fill_values_scientific.svg...")
     tensor = np.array([[1000, 2000], [3000, 4000]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val:.1e}")
+    diagram = td.to_diagram(tensor).fill_values(format=lambda idx, val: f"{val:.1e}")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_scientific.svg"), height=128
     )
@@ -784,7 +784,7 @@ def generate_2d_fill_values_integer(fixtures_dir):
     """Generate reference_2d_fill_values_integer.svg"""
     print("Generating reference_2d_fill_values_integer.svg...")
     tensor = np.array([[1.5, 2.7], [3.2, 4.9]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: str(int(val)))
+    diagram = td.to_diagram(tensor).fill_values(format=lambda idx, val: str(int(val)))
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_integer.svg"), height=128
     )
@@ -794,7 +794,7 @@ def generate_2d_fill_values_size_and_format(fixtures_dir):
     """Generate reference_2d_fill_values_size_and_format.svg"""
     print("Generating reference_2d_fill_values_size_and_format.svg...")
     tensor = np.array([[1.234, 5.678], [9.012, 3.456]], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format_fn=lambda idx, val: f"{val:.1f}")
+    diagram = td.to_diagram(tensor).fill_values(font_size=0.5, format=lambda idx, val: f"{val:.1f}")
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_fill_values_size_and_format.svg"), height=128
     )
@@ -814,7 +814,7 @@ def generate_1d_fill_values_custom_format(fixtures_dir):
     """Generate reference_1d_fill_values_custom_format.svg"""
     print("Generating reference_1d_fill_values_custom_format.svg...")
     tensor = np.array([1.1, 2.2, 3.3, 4.4, 5.5], dtype=np.float32)
-    diagram = td.to_diagram(tensor).fill_values(format_fn=lambda idx, val: f"{val:.0f}")
+    diagram = td.to_diagram(tensor).fill_values(format=lambda idx, val: f"{val:.0f}")
     diagram.render_svg(
         str(fixtures_dir / "reference_1d_fill_values_custom_format.svg"), height=128
     )
@@ -858,6 +858,56 @@ def generate_2d_annotate_indices_small_font_size(fixtures_dir):
     diagram = td.to_diagram(tensor).annotate_dim_indices(font_size=0.3)
     diagram.render_svg(
         str(fixtures_dir / "reference_2d_annotate_indices_small_font_size.svg"), height=128
+    )
+
+
+# fill_values with color function reference generators
+def generate_2d_fill_values_color_function_value(fixtures_dir):
+    """Generate reference_2d_fill_values_color_function_value.svg"""
+    print("Generating reference_2d_fill_values_color_function_value.svg...")
+    tensor = np.array([[1, -2, 3], [4, -5, 6]], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(
+        color=lambda idx, val: "red" if val > 0 else "blue"
+    )
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_color_function_value.svg"), height=128
+    )
+
+
+def generate_2d_fill_values_color_function_index(fixtures_dir):
+    """Generate reference_2d_fill_values_color_function_index.svg"""
+    print("Generating reference_2d_fill_values_color_function_index.svg...")
+    tensor = np.arange(12, dtype=np.float32).reshape(3, 4)
+    diagram = td.to_diagram(tensor).fill_values(
+        color=lambda idx, val: "green" if idx[0] % 2 == 0 else "purple"
+    )
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_color_function_index.svg"), height=128
+    )
+
+
+def generate_1d_fill_values_color_function(fixtures_dir):
+    """Generate reference_1d_fill_values_color_function.svg"""
+    print("Generating reference_1d_fill_values_color_function.svg...")
+    tensor = np.array([1, 2, 3, 4, 5], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(
+        color=lambda idx, val: "red" if idx % 2 == 0 else "blue"
+    )
+    diagram.render_svg(
+        str(fixtures_dir / "reference_1d_fill_values_color_function.svg"), height=128
+    )
+
+
+def generate_2d_fill_values_color_and_format(fixtures_dir):
+    """Generate reference_2d_fill_values_color_and_format.svg"""
+    print("Generating reference_2d_fill_values_color_and_format.svg...")
+    tensor = np.array([[1.5, -2.3, 3.7], [4.1, -5.9, 6.2]], dtype=np.float32)
+    diagram = td.to_diagram(tensor).fill_values(
+        color=lambda idx, val: "orange" if val > 0 else "cyan",
+        format=lambda idx, val: f"{abs(val):.1f}"
+    )
+    diagram.render_svg(
+        str(fixtures_dir / "reference_2d_fill_values_color_and_format.svg"), height=128
     )
 
 
@@ -944,6 +994,11 @@ GENERATORS = {
     "2d_annotate_indices_custom_font_size": generate_2d_annotate_indices_custom_font_size,
     "2d_annotate_indices_large_font_size": generate_2d_annotate_indices_large_font_size,
     "2d_annotate_indices_small_font_size": generate_2d_annotate_indices_small_font_size,
+    # fill_values with color function
+    "2d_fill_values_color_function_value": generate_2d_fill_values_color_function_value,
+    "2d_fill_values_color_function_index": generate_2d_fill_values_color_function_index,
+    "1d_fill_values_color_function": generate_1d_fill_values_color_function,
+    "2d_fill_values_color_and_format": generate_2d_fill_values_color_and_format,
 }
 
 

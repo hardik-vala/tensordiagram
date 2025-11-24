@@ -258,62 +258,62 @@ class TestFillValues:
         """Test fill_values with custom format function."""
         diagram = to_diagram(numpy_array_2d)
         format_fn = lambda x: f"{x:.1f}"
-        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        diagram_with_values = diagram.fill_values(format=format_fn)
         assert diagram_with_values.rank == diagram.rank
-        assert diagram_with_values._style.value_format_fn == format_fn
+        assert diagram_with_values._style.value_format == format_fn
 
     def test_fill_values_with_both_params(self, numpy_array_2d):
         """Test fill_values with both font_size and format_fn."""
         diagram = to_diagram(numpy_array_2d)
         format_fn = lambda x: f"{int(x)}"
-        diagram_with_values = diagram.fill_values(font_size=0.5, format_fn=format_fn)
+        diagram_with_values = diagram.fill_values(font_size=0.5, format=format_fn)
         assert diagram_with_values.rank == diagram.rank
         assert diagram_with_values._style.value_font_size == 0.5
-        assert diagram_with_values._style.value_format_fn == format_fn
+        assert diagram_with_values._style.value_format == format_fn
 
     def test_fill_values_percentage_formatting(self):
         """Test fill_values with percentage format function."""
         tensor = np.array([[0.123, 0.456], [0.789, 0.234]])
         diagram = to_diagram(tensor)
         format_fn = lambda x: f"{x*100:.1f}%"
-        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        diagram_with_values = diagram.fill_values(format=format_fn)
         assert diagram_with_values.rank == 2
-        assert diagram_with_values._style.value_format_fn == format_fn
+        assert diagram_with_values._style.value_format == format_fn
 
     def test_fill_values_scientific_notation(self):
         """Test fill_values with scientific notation format function."""
         tensor = np.array([[1000, 2000], [3000, 4000]])
         diagram = to_diagram(tensor)
         format_fn = lambda x: f"{x:.1e}"
-        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        diagram_with_values = diagram.fill_values(format=format_fn)
         assert diagram_with_values.rank == 2
-        assert diagram_with_values._style.value_format_fn == format_fn
+        assert diagram_with_values._style.value_format == format_fn
 
     def test_fill_values_integer_formatting(self):
         """Test fill_values with integer format function."""
         tensor = np.array([[1.5, 2.7], [3.2, 4.9]])
         diagram = to_diagram(tensor)
         format_fn = lambda x: str(int(x))
-        diagram_with_values = diagram.fill_values(format_fn=format_fn)
+        diagram_with_values = diagram.fill_values(format=format_fn)
         assert diagram_with_values.rank == 2
-        assert diagram_with_values._style.value_format_fn == format_fn
+        assert diagram_with_values._style.value_format == format_fn
 
     def test_fill_values_1d_with_custom_params(self, numpy_array_1d):
         """Test fill_values with custom params on 1D tensor."""
         diagram = to_diagram(numpy_array_1d)
         format_fn = lambda x: f"{x:.0f}"
-        diagram_with_values = diagram.fill_values(font_size=1.0, format_fn=format_fn)
+        diagram_with_values = diagram.fill_values(font_size=1.0, format=format_fn)
         assert diagram_with_values.rank == 1
         assert diagram_with_values._style.value_font_size == 1.0
-        assert diagram_with_values._style.value_format_fn == format_fn
+        assert diagram_with_values._style.value_format == format_fn
 
     def test_fill_values_none_params_defaults(self, numpy_array_2d):
         """Test fill_values with None params uses defaults."""
         diagram = to_diagram(numpy_array_2d)
-        diagram_with_values = diagram.fill_values(font_size=None, format_fn=None)
+        diagram_with_values = diagram.fill_values(font_size=None, format=None)
         assert diagram_with_values.rank == diagram.rank
         assert diagram_with_values._style.value_font_size is None
-        assert diagram_with_values._style.value_format_fn is None
+        assert diagram_with_values._style.value_format is None
 
     def test_fill_values_chaining_with_fill_color(self, numpy_array_2d):
         """Test fill_values can be chained with other styling methods."""
@@ -321,6 +321,152 @@ class TestFillValues:
         styled = diagram.fill_color("lightblue").fill_values(font_size=0.6)
         assert styled.rank == 2
         assert styled._style.value_font_size == 0.6
+
+    def test_fill_values_with_color(self, numpy_array_2d):
+        """Test fill_values with color parameter."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values(color="red")
+        assert diagram_with_values.rank == diagram.rank
+        assert diagram_with_values._style.value_color == "red"
+
+    def test_fill_values_color_stored_in_style(self, numpy_array_2d):
+        """Test that color is correctly stored in style."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values(color="blue")
+        assert diagram_with_values._style.value_color == "blue"
+        assert diagram_with_values._style.show_values is True
+
+    def test_fill_values_with_color_1d(self, numpy_array_1d):
+        """Test fill_values with color on 1D tensor."""
+        diagram = to_diagram(numpy_array_1d)
+        diagram_with_values = diagram.fill_values(color="green")
+        assert diagram_with_values.rank == 1
+        assert diagram_with_values._style.value_color == "green"
+
+    def test_fill_values_with_color_2d(self, numpy_array_2d):
+        """Test fill_values with color on 2D tensor."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values(color="purple")
+        assert diagram_with_values.rank == 2
+        assert diagram_with_values._style.value_color == "purple"
+
+    def test_fill_values_color_with_font_size(self, numpy_array_2d):
+        """Test fill_values with both color and font_size."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values(font_size=0.8, color="orange")
+        assert diagram_with_values._style.value_font_size == 0.8
+        assert diagram_with_values._style.value_color == "orange"
+
+    def test_fill_values_color_with_format_fn(self, numpy_array_2d):
+        """Test fill_values with both color and format_fn."""
+        diagram = to_diagram(numpy_array_2d)
+        format_fn = lambda idx, val: f"{val:.1f}"
+        diagram_with_values = diagram.fill_values(format=format_fn, color="cyan")
+        assert diagram_with_values._style.value_format == format_fn
+        assert diagram_with_values._style.value_color == "cyan"
+
+    def test_fill_values_all_params_with_color(self, numpy_array_2d):
+        """Test fill_values with all parameters including color."""
+        diagram = to_diagram(numpy_array_2d)
+        format_fn = lambda idx, val: f"{int(val)}"
+        diagram_with_values = diagram.fill_values(
+            font_size=0.5, format=format_fn, color="magenta"
+        )
+        assert diagram_with_values._style.value_font_size == 0.5
+        assert diagram_with_values._style.value_format == format_fn
+        assert diagram_with_values._style.value_color == "magenta"
+
+    def test_fill_values_color_none_default(self, numpy_array_2d):
+        """Test fill_values with color=None uses default."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values(color=None)
+        assert diagram_with_values._style.value_color is None
+
+    def test_fill_values_without_color_defaults_to_none(self, numpy_array_2d):
+        """Test fill_values without color parameter defaults to None."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_values = diagram.fill_values()
+        assert diagram_with_values._style.value_color is None
+
+    def test_fill_values_color_immutability(self, numpy_array_2d):
+        """Test that fill_values with color returns new instance."""
+        diagram = to_diagram(numpy_array_2d)
+        diagram_with_color = diagram.fill_values(color="red")
+        # Original should not have color set
+        assert diagram._style.value_color is None
+        # New instance should have color
+        assert diagram_with_color._style.value_color == "red"
+
+    def test_fill_values_color_chaining(self, numpy_array_2d):
+        """Test fill_values with color can be chained with other methods."""
+        diagram = to_diagram(numpy_array_2d)
+        styled = diagram.fill_color("lightblue").fill_values(color="darkred")
+        assert styled._style.value_color == "darkred"
+        assert styled.rank == 2
+
+    def test_fill_values_multiple_color_calls(self, numpy_array_2d):
+        """Test multiple fill_values calls with different colors."""
+        diagram = to_diagram(numpy_array_2d)
+        styled1 = diagram.fill_values(color="red")
+        styled2 = styled1.fill_values(color="blue")
+        # First styled instance should have red
+        assert styled1._style.value_color == "red"
+        # Second styled instance should have blue
+        assert styled2._style.value_color == "blue"
+
+    def test_fill_values_color_with_different_colors(self):
+        """Test fill_values with various color names."""
+        tensor = np.array([[1, 2], [3, 4]])
+        colors = ["red", "blue", "green", "yellow", "purple", "orange", "black", "white"]
+        for color in colors:
+            diagram = to_diagram(tensor).fill_values(color=color)
+            assert diagram._style.value_color == color
+
+    def test_fill_values_color_persists_through_styling(self, numpy_array_2d):
+        """Test that color persists when chaining other styling methods."""
+        diagram = to_diagram(numpy_array_2d)
+        styled = (
+            diagram.fill_values(color="red")
+            .fill_opacity(0.5)
+            .annotate_dim_indices()
+        )
+        assert styled._style.value_color == "red"
+        assert styled._style.show_values is True
+
+    def test_fill_values_with_color_function_1d(self, numpy_array_1d):
+        """Test fill_values with a color function on 1D tensor."""
+        diagram = to_diagram(numpy_array_1d)
+        color_fn = lambda idx, val: "red" if val > 2 else "blue"
+        diagram_with_values = diagram.fill_values(color=color_fn)
+        # Color function should be stored in style
+        assert diagram_with_values._style.value_color == color_fn
+        assert diagram_with_values._style.show_values is True
+
+    def test_fill_values_with_color_function_2d(self, numpy_array_2d):
+        """Test fill_values with a color function on 2D tensor."""
+        diagram = to_diagram(numpy_array_2d)
+        color_fn = lambda idx, val: "green" if val > 5 else "yellow"
+        diagram_with_values = diagram.fill_values(color=color_fn)
+        # Color function should be stored in style
+        assert diagram_with_values._style.value_color == color_fn
+        assert diagram_with_values._style.show_values is True
+
+    def test_fill_values_color_function_based_on_index(self, numpy_array_2d):
+        """Test fill_values with color function based on index position."""
+        diagram = to_diagram(numpy_array_2d)
+        # Color based on row index
+        color_fn = lambda idx, val: "red" if idx[0] == 0 else "blue"
+        diagram_with_values = diagram.fill_values(color=color_fn)
+        assert diagram_with_values._style.value_color == color_fn
+
+    def test_fill_values_color_function_with_format_fn(self, numpy_array_2d):
+        """Test fill_values with both color function and format function."""
+        diagram = to_diagram(numpy_array_2d)
+        color_fn = lambda idx, val: "red" if val > 5 else "blue"
+        format_fn = lambda idx, val: f"{val:.1f}"
+        diagram_with_values = diagram.fill_values(color=color_fn, format=format_fn)
+        assert diagram_with_values._style.value_color == color_fn
+        assert diagram_with_values._style.value_format == format_fn
 
 
 class TestStyling:
