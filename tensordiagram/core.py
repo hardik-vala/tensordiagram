@@ -3,7 +3,7 @@ from __future__ import annotations
 from colour import Color
 from dataclasses import dataclass
 import functools
-from typing import Any, List, Literal, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Tuple, Union
 import sys
 
 import chalk
@@ -22,6 +22,9 @@ from tensordiagram.types import (
     TensorStyle,
 )
 from .utils import convert_tensor, draw_cell, draw_cube
+
+if TYPE_CHECKING:
+    from PIL.Image import Image as PILImage
 
 DEFAULT_HEIGHT = 128
 
@@ -591,7 +594,7 @@ class TensorDiagramImpl(TensorDiagram):
 
     def to_image_png(
         self, height: Optional[int] = None, width: Optional[int] = None
-    ):  # type: ignore[no-untyped-def]
+    ) -> PILImage:
         """
         Render the diagram to a PIL Image object in PNG format.
 
@@ -665,7 +668,7 @@ class TensorDiagramImpl(TensorDiagram):
 
     def to_image_svg(
         self, height: Optional[int] = None, width: Optional[int] = None
-    ):  # type: ignore[no-untyped-def]
+    ) -> PILImage:
         """
         Render the diagram to a PIL Image object by converting from SVG format.
 
@@ -723,7 +726,7 @@ class TensorDiagramImpl(TensorDiagram):
 
     def to_image(
         self, height: Optional[int] = None, width: Optional[int] = None
-    ):  # type: ignore[no-untyped-def]
+    ) -> PILImage:
         """
         Render the diagram to a PIL Image object.
 
