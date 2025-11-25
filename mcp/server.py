@@ -2,7 +2,7 @@
 """
 tensordiagram MCP Server
 
-Provides tensor drawing tools for AI assistants via the Model Context Protocol.
+Provides tensor drawing tools for AI assistants via MCP.
 Enables LLMs to generate visual representations of tensor shapes and operations.
 """
 import argparse
@@ -11,6 +11,8 @@ import os
 import tempfile
 from typing import Optional, Literal
 
+import chalk
+from colour import Color
 from fastmcp import FastMCP, Image
 import numpy as np
 import tensordiagram as td
@@ -22,8 +24,20 @@ mcp = FastMCP(
 )
 
 # constants
-DEFAULT_HEIGHT = 400
+DEFAULT_HEIGHT = 200
 MAX_IMAGE_SIZE = 900_000  # bytes (900KB with safety margin for 1MB MCP limit)
+
+
+def add_background(diagram, bg_color="white"):
+    cd = diagram.to_chalk_diagram()
+    cd_padded = cd.pad(1.2)
+    env = cd.get_envelope()
+    bgd = (
+        chalk.rectangle(env.width, env.height)
+        .fill_color(Color(bg_color))
+        .line_width(0.0)
+    )
+    return bgd + cd_padded.center_xy()
 
 
 @mcp.tool()
@@ -31,11 +45,9 @@ def draw_tensor(
     shape: tuple[int, ...],
     values: Optional[list[int] | list[float]] = None,
     color: Optional[str] = None,
-    opacity: float = 1.0,
     show_values: bool = False,
     show_dim_indices: bool = False,
     show_dim_sizes: bool = False,
-    height: int = DEFAULT_HEIGHT,
 ) -> Image:
     """
     Create a visual diagram of a tensor with the given shape.
@@ -58,9 +70,6 @@ def draw_tensor(
                or hex code (e.g., "#FF5733"). If not specified, cells will not be filled
                with a color. Default: None.
 
-        opacity: Opacity of tensor cells, from 0.0 (transparent) to 1.0 (opaque).
-                 Default: 1.0.
-
         show_values: Whether to display values inside cells. Only supported for 1D
                      and 2D tensors. Default: False.
 
@@ -70,9 +79,6 @@ def draw_tensor(
         show_dim_sizes: Whether to show dimension sizes (the actual numbers from
                         the shape tuple). Default: False.
 
-        height: Output image height in pixels. Default: 400.
-                Larger values give higher resolution but bigger file sizes.
-
     Returns:
         Image object containing the PNG visualization of the tensor.
 
@@ -80,7 +86,6 @@ def draw_tensor(
         ValueError: If shape is invalid (empty, >3 dimensions, non-positive values).
         ValueError: If values array size doesn't match shape.
         ValueError: If 3D tensor requested with show_values=True (not supported).
-        ValueError: If opacity is not between 0.0 and 1.0.
         RuntimeError: If generated image exceeds 1MB MCP limit.
         ImportError: If required dependencies (pycairo) are not installed.
 
@@ -111,11 +116,12 @@ def draw_tensor(
                 shape=(3, 3),
                 values=[1, 2, 3, 4, 5, 6, 7, 8, 9],
                 color="purple",
-                opacity=0.7,
                 show_values=True,
                 show_dim_sizes=True
             )
     """
+
+    height = DEFAULT_HEIGHT
 
     # ===== input validation =====
 
@@ -144,9 +150,6 @@ def draw_tensor(
     if len(shape) == 3 and show_values:
         raise ValueError("show_values is not supported for 3d tensors.")
 
-    if not 0.0 <= opacity <= 1.0:
-        raise ValueError(f"opacity must be between 0.0 and 1.0 (got {opacity})")
-
     if height <= 0:
         raise ValueError(f"height must be positive (got {height})")
 
@@ -164,7 +167,6 @@ def draw_tensor(
         # apply styling
         if color is not None:
             diagram = diagram.fill_color(color)
-        diagram = diagram.fill_opacity(opacity)
 
         # apply value display if requested
         if show_values and values is not None:
@@ -176,6 +178,9 @@ def draw_tensor(
 
         if show_dim_sizes:
             diagram = diagram.annotate_dim_size()
+
+        # add background
+        diagram = add_background(diagram, bg_color="white")
 
         # render to PNG via temporary file
         # (tensordiagram requires file paths for rendering)
