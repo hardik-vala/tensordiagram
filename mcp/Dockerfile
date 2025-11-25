@@ -17,8 +17,6 @@ WORKDIR /app
 COPY server.py .
 COPY __init__.py .
 COPY pyproject.toml .
-COPY README.md .
-COPY DESIGN.md .
 
 # install dependencies
 RUN pip install --no-cache-dir \
