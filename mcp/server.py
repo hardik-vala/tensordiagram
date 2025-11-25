@@ -60,7 +60,6 @@ def draw_tensor(
     shape: tuple[int, ...],
     values: Optional[list[int] | list[float] | str] = None,
     color: Optional[str] = None,
-    show_values: bool = False,
     show_dim_indices: bool = False,
     show_dim_sizes: bool = False,
 ) -> Image:
@@ -79,15 +78,13 @@ def draw_tensor(
         values: Optional flattened list of values to display in the tensor cells.
                 Must match the total size of the shape (product of all dimensions).
                 Can be a list ([1, 2, 3, 4, 5, 6]) or a JSON string ('[1, 2, 3, 4, 5, 6]').
+                When provided, values will automatically be displayed inside the cells.
                 Example: [1, 2, 3, 4, 5, 6] or '[1, 2, 3, 4, 5, 6]' for shape (2, 3).
                 Note: Not supported for 3D tensors.
 
         color: Optional fill color for tensor cells. Can be a color name (e.g., "red", "blue")
                or hex code (e.g., "#FF5733"). If not specified, cells will not be filled
                with a color. Default: None.
-
-        show_values: Whether to display values inside cells. Only supported for 1D
-                     and 2D tensors. Default: False.
 
         show_dim_indices: Whether to show dimension indices (0, 1, 2, etc.) along
                           each dimension. Default: False.
@@ -101,7 +98,7 @@ def draw_tensor(
     Raises:
         ValueError: If shape is invalid (empty, >3 dimensions, non-positive values).
         ValueError: If values array size doesn't match shape.
-        ValueError: If 3D tensor requested with show_values=True (not supported).
+        ValueError: If values provided for 3D tensor (not supported).
         RuntimeError: If generated image exceeds 1MB MCP limit.
         ImportError: If required dependencies (pycairo) are not installed.
 
@@ -115,8 +112,7 @@ def draw_tensor(
         1D tensor with values displayed:
             draw_tensor(
                 shape=(5,),
-                values=[1.0, 2.0, 3.0, 4.0, 5.0],
-                show_values=True
+                values=[1.0, 2.0, 3.0, 4.0, 5.0]
             )
 
         2D tensor with annotations:
@@ -127,12 +123,11 @@ def draw_tensor(
                 show_dim_indices=True
             )
 
-        Matrix with custom styling:
+        Matrix with values and custom styling:
             draw_tensor(
                 shape=(3, 3),
                 values=[1, 2, 3, 4, 5, 6, 7, 8, 9],
                 color="purple",
-                show_values=True,
                 show_dim_sizes=True
             )
     """
@@ -173,8 +168,8 @@ def draw_tensor(
                 f"shape {shape} requires exactly {expected_size} values"
             )
 
-    if len(shape) == 3 and show_values:
-        raise ValueError("show_values is not supported for 3d tensors.")
+    if len(shape) == 3 and values is not None:
+        raise ValueError("displaying values is not supported for 3d tensors.")
 
     if height <= 0:
         raise ValueError(f"height must be positive (got {height})")
@@ -201,8 +196,8 @@ def draw_tensor(
         if color is not None:
             diagram = diagram.fill_color(color)
 
-        # apply value display if requested
-        if show_values and values is not None:
+        # apply value display if values are provided
+        if values is not None:
             diagram = diagram.fill_values()
 
         # apply annotations
