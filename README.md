@@ -74,7 +74,7 @@ img = diagram.to_image_svg(height=300)
 diagram \
   .fill_values() \
   .fill_color("lightblue") \
-  .annotate_dim_size(dim="row", color="lightgreen")
+  .annotate_dim_size(dim=0, color="lightgreen")
 ```
 
 ![styled 3x4 matrix](https://raw.githubusercontent.com/hardik-vala/tensordiagram/refs/heads/main/doc/imgs/matrix_styled.png)
