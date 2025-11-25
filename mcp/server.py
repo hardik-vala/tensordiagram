@@ -13,7 +13,8 @@ from typing import Optional, Literal
 
 import chalk
 from colour import Color
-from fastmcp import FastMCP, Image
+from fastmcp import FastMCP
+from fastmcp.utilities.types import Image
 import numpy as np
 import tensordiagram as td
 
@@ -25,6 +26,7 @@ mcp = FastMCP(
 
 # constants
 DEFAULT_HEIGHT = 200
+MIN_WIDTH = 400  # minimum width for output images (pixels)
 MAX_IMAGE_SIZE = 900_000  # bytes (900KB with safety margin for 1MB MCP limit)
 
 
@@ -181,6 +183,20 @@ def draw_tensor(
 
         # add background
         diagram = add_background(diagram, bg_color="white")
+
+        # calculate aspect ratio and adjust height if needed to meet minimum width
+        # claude app displays images with a minimum width of ~400 pixels 
+        env = diagram.get_envelope()
+        aspect_ratio = env.width / env.height
+
+        # calculate what the actual pixel width would be with the current height
+        # render_png uses height parameter, and width is calculated based on aspect ratio
+        calculated_width = height * aspect_ratio
+
+        # if calculated width is less than minimum, adjust height to achieve minimum width
+        if calculated_width < MIN_WIDTH:
+            # use ceiling to ensure we meet the minimum (avoid rounding down)
+            height = int(MIN_WIDTH / aspect_ratio) + 1
 
         # render to PNG via temporary file
         # (tensordiagram requires file paths for rendering)
