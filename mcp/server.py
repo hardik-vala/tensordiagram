@@ -183,6 +183,11 @@ def draw_tensor(
 
     rank = len(shape)
 
+    # reshape 1D tensors to be horizontal (1 row, N columns) instead of vertical
+    if rank == 1:
+        shape = (1, shape[0])
+        rank = 2
+
     try:
         # create base diagram from shape
         if values is not None:
