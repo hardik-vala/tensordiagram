@@ -7,6 +7,7 @@ Enables LLMs to generate visual representations of tensor shapes and operations.
 """
 import argparse
 import functools
+import json
 import os
 import tempfile
 from typing import Optional, Literal
@@ -57,7 +58,7 @@ def add_background(diagram, rank, bg_color="white"):
 @mcp.tool()
 def draw_tensor(
     shape: tuple[int, ...],
-    values: Optional[list[int] | list[float]] = None,
+    values: Optional[list[int] | list[float] | str] = None,
     color: Optional[str] = None,
     show_values: bool = False,
     show_dim_indices: bool = False,
@@ -77,7 +78,8 @@ def draw_tensor(
 
         values: Optional flattened list of values to display in the tensor cells.
                 Must match the total size of the shape (product of all dimensions).
-                Example: [1, 2, 3, 4, 5, 6] for shape (2, 3).
+                Can be a list ([1, 2, 3, 4, 5, 6]) or a JSON string ('[1, 2, 3, 4, 5, 6]').
+                Example: [1, 2, 3, 4, 5, 6] or '[1, 2, 3, 4, 5, 6]' for shape (2, 3).
                 Note: Not supported for 3D tensors.
 
         color: Optional fill color for tensor cells. Can be a color name (e.g., "red", "blue")
@@ -138,6 +140,16 @@ def draw_tensor(
     height = DEFAULT_HEIGHT
 
     # ===== input validation =====
+
+    # parse values if provided as string
+    if values is not None and isinstance(values, str):
+        try:
+            values = json.loads(values)
+        except json.JSONDecodeError as e:
+            raise ValueError(
+                f"values string is not valid JSON: {str(e)}\n"
+                f"Expected format: '[1, 2, 3, ...]' or '[1.0, 2.0, 3.0, ...]'"
+            ) from e
 
     if not shape or len(shape) == 0:
         raise ValueError("shape must have at least 1 dimension")
