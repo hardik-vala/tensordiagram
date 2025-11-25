@@ -30,16 +30,28 @@ MIN_WIDTH = 400  # minimum width for output images (pixels)
 MAX_IMAGE_SIZE = 900_000  # bytes (900KB with safety margin for 1MB MCP limit)
 
 
-def add_background(diagram, bg_color="white"):
+def add_background(diagram, rank, bg_color="white"):
+    if rank == 1:
+        padding = 0.25
+    elif rank == 2:
+        padding = 0.5
+    else:
+        padding = 0.75
+
     cd = diagram.to_chalk_diagram()
-    cd_padded = cd.pad(1.2)
+    cd = cd.frame(padding)
     env = cd.get_envelope()
     bgd = (
         chalk.rectangle(env.width, env.height)
         .fill_color(Color(bg_color))
         .line_width(0.0)
     )
-    return bgd + cd_padded.center_xy()
+
+    dx, dy = 0.0, 0.0
+    if rank == 3:
+        dy = 0.25
+
+    return bgd + cd.center_xy().translate(dx=dx, dy=dy)
 
 
 @mcp.tool()
@@ -157,6 +169,8 @@ def draw_tensor(
 
     # ===== diagram =====
 
+    rank = len(shape)
+
     try:
         # create base diagram from shape
         if values is not None:
@@ -182,10 +196,10 @@ def draw_tensor(
             diagram = diagram.annotate_dim_size()
 
         # add background
-        diagram = add_background(diagram, bg_color="white")
+        diagram = add_background(diagram, rank, bg_color="white")
 
         # calculate aspect ratio and adjust height if needed to meet minimum width
-        # claude app displays images with a minimum width of ~400 pixels 
+        # claude app displays images with a minimum width of ~400 pixels
         env = diagram.get_envelope()
         aspect_ratio = env.width / env.height
 
