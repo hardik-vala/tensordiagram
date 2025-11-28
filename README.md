@@ -157,9 +157,18 @@ pytest
 
 ### deploy
 
-1. update version in pyproject.toml and commit
+#### main package (tensordiagram)
+
+1. update version in `pyproject.toml` and commit
 2. `git tag vX.X.X`
-3. `git push origin vX.X.X` (auto-triggers gh action for publishing a new library)
+3. `git push origin vX.X.X` (auto-triggers gh action for publishing to PyPI)
+4. create a new gh release with the tag
+
+#### mcp package (tensordiagram-mcp)
+
+1. update version in `mcp/pyproject.toml` and commit
+2. `git tag mcp-vX.X.X`
+3. `git push origin mcp-vX.X.X` (auto-triggers gh action for publishing to PyPI)
 4. create a new gh release with the tag
 
 ## license
