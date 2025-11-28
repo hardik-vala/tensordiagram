@@ -1,0 +1,31 @@
+services:
+  # fefault: HTTP/SSE mode (recommended for production)
+  tensordiagram-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tensordiagram-mcp:latest
+    container_name: tensordiagram-mcp
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # alternative: stdio mode (for local testing with MCP clients)
+  tensordiagram-mcp-stdio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tensordiagram-mcp:latest
+    container_name: tensordiagram-mcp-stdio
+    command: ["python", "server.py"]  # override to use stdio
+    stdin_open: true  # enable stdin for stdio transport
+    tty: true         # allocate a pseudo-TTY
+    restart: unless-stopped

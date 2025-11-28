@@ -1,0 +1,21 @@
+[project]
+name = "tensordiagram-mcp"
+version = "0.1.0"
+description = "MCP server for drawing tensors with tensordiagram"
+authors = [
+    {name = "tensordiagram contributors"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+
+dependencies = [
+    "fastmcp>=2.0.0",
+    "tensordiagram>=0.1.2",
+    "numpy",
+    "pycairo",  # required for PNG rendering
+]
+
+[project.urls]
+Homepage = "https://github.com/hardik-vala/tensordiagram"
+Repository = "https://github.com/hardik-vala/tensordiagram"
