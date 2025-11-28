@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "tensordiagram-mcp"
 version = "0.1.0"
@@ -19,3 +23,6 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/hardik-vala/tensordiagram"
 Repository = "https://github.com/hardik-vala/tensordiagram"
+
+[tool.setuptools]
+py-modules = ["server"]
